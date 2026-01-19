@@ -1,0 +1,216 @@
+---
+title: "Hands-on_Ex02"
+author: "Bai Haotian"
+---
+
+# Getting Started
+
+## Install and launching R packages
+
+Code chunk below will be used to check if these packages have been installed and also will load them onto your working R environment.
+
+```{r}
+pacman::p_load(ggrepel, patchwork, 
+               ggthemes, hrbrthemes,
+               tidyverse) 
+
+```
+
+## Importing the data
+There are a total of seven attributes in the exam_data tibble data frame. Four of them are categorical data type and the other three are in continuous data type.
+The categorical attributes are: ID, CLASS, GENDER and RACE.
+The continuous attributes are: MATHS, ENGLISH and SCIENCE.
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+## Beyond ggplot2 Annotation: ggrepel
+
+After studying the section on Data and Aesthetic Mapping, I gained a clearer understanding of how aes() functions in ggplot2. Rather than controlling the visual appearance directly, aesthetic mapping defines the relationship between data variables and visual properties such as position, color, or size.
+
+I noticed that Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+So I use `linewidth` instead.
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              linewidth=0.5) +  
+  geom_label(aes(label = ID), 
+             hjust = .5, 
+             vjust = -.5) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
+
+## Working with ggrepel
+
+I noticed that Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+So I use `linewidth` instead.
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              linewidth=0.5) +  
+  geom_label_repel(aes(label = ID), 
+                   fontface = "bold") +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
+
+## Beyond ggplot2 Themes
+
+After studying the section on Beyond ggplot2 Themes, I developed a more structured understanding of the role of themes in data visualization. The eight built-in themes provided by ggplot2, such as theme_gray(), theme_bw(), and theme_minimal(), offer different overall visual styles by adjusting non-data elements like background, grid lines, fonts, and axes. This helped me realize that themes do not alter the underlying data but instead enhance readability and presentation consistency. In practice, selecting an appropriate built-in theme allows for the rapid creation of clean and professional-looking plots, which is especially useful for data exploration and coursework.
+
+```{r}
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  theme_gray() +
+  ggtitle("Distribution of Maths scores") 
+```
+
+## Working with ggtheme package
+
+ggthemes provides ‘ggplot2’ themes that replicate the look of plots by Edward Tufte, Stephen Few, Fivethirtyeight, The Economist, ‘Stata’, ‘Excel’, and The Wall Street Journal, among others.
+
+```{r}
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_economist()
+```
+
+## Working with hrbthems package
+
+hrbrthemes package provides a base theme that focuses on typographic elements, including where various labels are placed as well as the fonts that are used.
+
+```{r}
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum()
+```
+```{r}
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum(axis_title_size = 18,
+              base_size = 15,
+              grid = "Y")
+```
+axis_title_size argument is used to increase the font size of the axis title to 18, base_size argument is used to increase the default axis label to 15, and grid argument is used to remove the x-axis grid lines.
+
+## Beyond Single Graph
+
+```{r}
+p1 <- ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") + 
+  coord_cartesian(xlim=c(0,100)) +
+  ggtitle("Distribution of Maths scores")
+```
+Next
+```{r}
+p2 <- ggplot(data=exam_data, 
+             aes(x = ENGLISH)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  coord_cartesian(xlim=c(0,100)) +
+  ggtitle("Distribution of English scores")
+```
+Lastly, we will draw a scatterplot for English score versus Maths score by as shown below
+```{r}
+p3 <- ggplot(data=exam_data, 
+             aes(x= MATHS, 
+                 y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              linewidth=0.5) +  
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
+
+## Creating Composite Graphics: pathwork methods
+
+Patchwork package has a very simple syntax where we can create layouts super easily. Here’s the general syntax that combines:
+
+Two-Column Layout using the Plus Sign +.
+Parenthesis () to create a subplot group.
+Two-Row Layout using the Division Sign /
+
+## Combining two ggplot2 graphs
+
+```{r}
+p1 + p2
+```
+
+## Combining three ggplot2 graphs
+
+We can plot more complex composite by using appropriate operators. For example, the composite figure below is plotted by using:
+
+"/" operator to stack two ggplot2 graphs,
+"|" operator to place the plots beside each other,
+"()" operator the define the sequence of the plotting.
+
+```{r}
+(p1 / p2) | p3
+```
+
+## Creating a composite figure with tag
+
+In order to identify subplots in text, patchwork also provides auto-tagging capabilities as shown in the figure below.
+
+```{r}
+((p1 / p2) | p3) + 
+  plot_annotation(tag_levels = 'I')
+```
+
+## Creating figure with insert
+
+Beside providing functions to place plots next to each other based on the provided layout. With inset_element() of patchwork, we can place one or several plots or graphic elements freely on top or below another plot.
+
+```{r}
+p3 + inset_element(p2, 
+                   left = 0.02, 
+                   bottom = 0.7, 
+                   right = 0.5, 
+                   top = 1)
+```
+
+## Creating a composite figure by using patchwork and ggtheme
+
+Figure below is created by combining patchwork and theme_economist() of ggthemes package discussed earlier.
+
+```{r}
+patchwork <- (p1 / p2) | p3
+patchwork & theme_economist()
+```
