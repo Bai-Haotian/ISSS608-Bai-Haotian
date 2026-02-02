@@ -320,5 +320,19 @@
     "title": "Hands-on Exercise 4",
     "section": "",
     "text": "Next, the code chunk below will be used to build the HOPs.\n\nggplot(data = exam, \n       (aes(x = factor(RACE), \n            y = MATHS))) +\n  geom_point(position = position_jitter(\n    height = 0.3, \n    width = 0.05), \n    size = 0.4, \n    color = \"#0072B2\", \n    alpha = 1/2) +\n  geom_hpline(data = sampler(25, \n                             group = RACE), \n              height = 0.6, \n              color = \"#D55E00\") +\n  theme_bw() + \n  transition_states(.draw, 1, 3)\n\nWarning in geom_hpline(data = sampler(25, group = RACE), height = 0.6, color =\n\"#D55E00\"): Ignoring unknown parameters: `height`"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ISSS608-Bai-Haotian",
+    "section": "",
+    "text": "Welcome to ISSS608 Visual Analytics and Applications. In this website, you will find my coursework prepared for this course."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\nThis site contains my ISSS608 hands-on exercises and learning notes."
   }
 ]
