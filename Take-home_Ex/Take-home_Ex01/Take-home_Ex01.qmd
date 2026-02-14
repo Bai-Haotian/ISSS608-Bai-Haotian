@@ -206,6 +206,9 @@ analysis_data %>%
 
 ### Plot
 ```{r echo=FALSE}
+library(tidyverse)
+library(scales)
+
 study_order <- c(
   "under 2 hours",
   "from 2 to lower 4 hours",
@@ -222,22 +225,15 @@ gpa_order <- c(
   "Excellent (>3.6)"
 )
 
-ins2_df <- analysis_data %>%
+analysis_data %>%
   mutate(
-    time_studying_val = suppressWarnings(as.numeric(as.character(time_studying))),
-    gpa_val = suppressWarnings(as.numeric(as.character(gpa))),
-    Time_Studying_cat = factor(time_studying_val, levels = 1:5, labels = study_order, ordered = TRUE),
-    GPA_cat = factor(gpa_val, levels = 1:5, labels = gpa_order, ordered = TRUE)
+    Time_Studying_cat = factor(time_studying, levels = 1:5, labels = study_order, ordered = TRUE),
+    GPA_cat = factor(gpa, levels = 1:5, labels = gpa_order, ordered = TRUE)
   ) %>%
   filter(!is.na(Time_Studying_cat), !is.na(GPA_cat)) %>%
-  count(Time_Studying_cat, GPA_cat) %>%
-  group_by(Time_Studying_cat) %>%
-  mutate(pct = n / sum(n)) %>%
-  ungroup()
-
-ggplot(ins2_df, aes(x = Time_Studying_cat, y = pct, fill = GPA_cat)) +
-  geom_col(width = 0.75) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  ggplot(aes(x = Time_Studying_cat, fill = GPA_cat)) +
+  geom_bar(position = "fill", width = 0.75) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(
     title = "GPA composition by daily study time",
     subtitle = "Within each study-time group, bars show the proportion of students in each GPA category",
@@ -247,46 +243,23 @@ ggplot(ins2_df, aes(x = Time_Studying_cat, y = pct, fill = GPA_cat)) +
   ) +
   theme_minimal() +
   theme(
-  plot.title = element_text(face = "bold", size = 16),
-  axis.text.x = element_text(size = 10, angle = 30, hjust = 1),
-  axis.text.y = element_text(size = 11),
-  legend.title = element_text(size = 11),
-  legend.text = element_text(size = 10)
-)
+    plot.title = element_text(face = "bold", size = 16),
+    axis.text.x = element_text(size = 10, angle = 30, hjust = 1),
+    axis.text.y = element_text(size = 11),
+    legend.title = element_text(size = 11),
+    legend.text = element_text(size = 10)
+  )
 ```
 ### Code
 ```{r eval=FALSE}
-study_order <- c(
-  "under 2 hours",
-  "from 2 to lower 4 hours",
-  "from 4 to lower 6 hours",
-  "from 6 to lower 8 hours",
-  "over 8 hours"
-)
-
-gpa_order <- c(
-  "Poor (<2.0)",
-  "Below Average (2.0–2.5)",
-  "Fair (2.5–3.2)",
-  "Good (3.2–3.6)",
-  "Excellent (>3.6)"
-)
-
-ins2_df <- analysis_data %>%
+analysis_data %>%
   mutate(
-    time_studying_val = suppressWarnings(as.numeric(as.character(time_studying))),
-    gpa_val = suppressWarnings(as.numeric(as.character(gpa))),
-    Time_Studying_cat = factor(time_studying_val, levels = 1:5, labels = study_order, ordered = TRUE),
-    GPA_cat = factor(gpa_val, levels = 1:5, labels = gpa_order, ordered = TRUE)
+    Time_Studying_cat = factor(time_studying, levels = 1:5, labels = study_order, ordered = TRUE),
+    GPA_cat = factor(gpa, levels = 1:5, labels = gpa_order, ordered = TRUE)
   ) %>%
   filter(!is.na(Time_Studying_cat), !is.na(GPA_cat)) %>%
-  count(Time_Studying_cat, GPA_cat) %>%
-  group_by(Time_Studying_cat) %>%
-  mutate(pct = n / sum(n)) %>%
-  ungroup()
-
-ggplot(ins2_df, aes(x = Time_Studying_cat, y = pct, fill = GPA_cat)) +
-  geom_col(width = 0.75) +
+  ggplot(aes(x = Time_Studying_cat, fill = GPA_cat)) +
+  geom_bar(position = "fill", width = 0.75) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(
     title = "GPA composition by daily study time",
@@ -295,14 +268,7 @@ ggplot(ins2_df, aes(x = Time_Studying_cat, y = pct, fill = GPA_cat)) +
     y = "Proportion of students",
     fill = "GPA Category"
   ) +
-  theme_minimal() +
- theme(
-  plot.title = element_text(face = "bold", size = 16),
-  axis.text.x = element_text(size = 10, angle = 30, hjust = 1),
-  axis.text.y = element_text(size = 11),
-  legend.title = element_text(size = 11),
-  legend.text = element_text(size = 10)
-)
+  theme_minimal()
 ```
 :::
 ### Insights
@@ -317,6 +283,9 @@ ggplot(ins2_df, aes(x = Time_Studying_cat, y = pct, fill = GPA_cat)) +
 
 ### Plot
 ```{r echo=FALSE}
+library(tidyverse)
+library(scales)
+
 support_order <- c(
   "Not at all (1)",
   "Little (2)",
@@ -339,13 +308,9 @@ analysis_data %>%
     GPA_cat = factor(gpa, levels = 1:5, labels = gpa_order, ordered = TRUE)
   ) %>%
   filter(!is.na(support_cat), !is.na(GPA_cat)) %>%
-  count(support_cat, GPA_cat) %>%
-  group_by(support_cat) %>%
-  mutate(pct = n / sum(n)) %>%
-  ungroup() %>%
-  ggplot(aes(x = support_cat, y = pct, fill = GPA_cat)) +
-  geom_col(width = 0.75) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  ggplot(aes(x = support_cat, fill = GPA_cat)) +
+  geom_bar(position = "fill", width = 0.75) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
   labs(
     title = "GPA composition by lecturer support",
     subtitle = "Within each support level, bars show the proportion of students in each GPA category",
@@ -364,34 +329,14 @@ analysis_data %>%
 ```
 ### Code
 ```{r eval=FALSE}
-support_order <- c(
-  "Not at all (1)",
-  "Little (2)",
-  "Moderate (3)",
-  "Quite (4)",
-  "Very (5)"
-)
-
-gpa_order <- c(
-  "Poor (<2.0)",
-  "Below Average (2.0–2.5)",
-  "Fair (2.5–3.2)",
-  "Good (3.2–3.6)",
-  "Excellent (>3.6)"
-)
-
 analysis_data %>%
   mutate(
     support_cat = factor(support_of_lec, levels = 1:5, labels = support_order, ordered = TRUE),
     GPA_cat = factor(gpa, levels = 1:5, labels = gpa_order, ordered = TRUE)
   ) %>%
   filter(!is.na(support_cat), !is.na(GPA_cat)) %>%
-  count(support_cat, GPA_cat) %>%
-  group_by(support_cat) %>%
-  mutate(pct = n / sum(n)) %>%
-  ungroup() %>%
-  ggplot(aes(x = support_cat, y = pct, fill = GPA_cat)) +
-  geom_col(width = 0.75) +
+  ggplot(aes(x = support_cat, fill = GPA_cat)) +
+  geom_bar(position = "fill", width = 0.75) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(
     title = "GPA composition by lecturer support",
@@ -400,14 +345,7 @@ analysis_data %>%
     y = "Proportion of students",
     fill = "GPA Category"
   ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(face = "bold", size = 16),
-    axis.text.x = element_text(size = 10, angle = 15, hjust = 1),
-    axis.text.y = element_text(size = 11),
-    legend.title = element_text(size = 11),
-    legend.text = element_text(size = 10)
-  )
+  theme_minimal()
 ```
 :::
 ### Insights
@@ -420,8 +358,10 @@ analysis_data %>%
 ::: {.panel-tabset}
 
 ### Plot
-```{r echo=FALSE}
-library(tidyverse)
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+library(dplyr)
+library(ggstatsplot)
 
 eda_vars <- analysis_data %>%
   select(
@@ -433,40 +373,24 @@ eda_vars <- analysis_data %>%
     quality_lecturer,
     training_curriculum,
     competitive_class
-  )
+  ) %>%
+  na.omit()
 
-cor_df <- cor(eda_vars, use = "complete.obs") %>%
-  as.data.frame() %>%
-  rownames_to_column("Var1") %>%
-  pivot_longer(
-    cols = -Var1,
-    names_to = "Var2",
-    values_to = "Correlation"
-  )
-
-ggplot(cor_df, aes(Var1, Var2, fill = Correlation)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(
-    low = "#d73027",
-    mid = "white",
-    high = "#1a9850",
-    midpoint = 0,
-    limits = c(-1, 1)
-  ) +
-  labs(
-    title = "Correlation among learning behaviours and perceptions",
-    x = NULL,
-    y = NULL,
-    fill = "Correlation"
-  ) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    plot.title = element_text(face = "bold", size = 16)
-  )
+ggstatsplot::ggcorrmat(
+  data = eda_vars,
+  cor.vars = 1:ncol(eda_vars),
+  type = "parametric",
+  matrix.type = "lower",
+  hc.order = TRUE,
+  title = "Correlation among learning behaviours and perceptions",
+  subtitle = "Pearson correlation (lower triangle); reordered by clustering"
+)
 ```
 ### Code
 ```{r eval=FALSE}
+library(dplyr)
+library(ggstatsplot)
+
 eda_vars <- analysis_data %>%
   select(
     time_studying,
@@ -477,28 +401,26 @@ eda_vars <- analysis_data %>%
     quality_lecturer,
     training_curriculum,
     competitive_class
-  )
+  ) %>%
+  na.omit()
 
-cor_df <- cor(eda_vars, use = "complete.obs") %>%
-  as.data.frame() %>%
-  rownames_to_column("Var1") %>%
-  pivot_longer(
-    cols = -Var1,
-    names_to = "Var2",
-    values_to = "Correlation"
-  )
-
-ggplot(cor_df, aes(Var1, Var2, fill = Correlation)) +
-  geom_tile() +
-  scale_fill_gradient2(midpoint = 0)
+ggstatsplot::ggcorrmat(
+  data = eda_vars,
+  cor.vars = 1:ncol(eda_vars),
+  type = "parametric",
+  matrix.type = "lower",
+  hc.order = TRUE,
+  title = "Correlation among learning behaviours and perceptions",
+  subtitle = "Pearson correlation (lower triangle); reordered by clustering"
+)
 ```
 :::
 ### Insights
 
-- Strong positive correlations are observed among perceived learning environment variables, including lecturer quality, teaching support, and curriculum training, suggesting these perceptions tend to co-vary.
-- Time spent studying shows moderate positive association with perceived study methods and learning support, indicating that more engaged students may also perceive the learning environment more positively.
-- In contrast, time spent with friends exhibits weaker or negative correlations with academic-related perceptions, highlighting a potential trade-off between social time and learning engagement.
-- Overall, the results suggest that students’ learning behaviours and perceptions form coherent patterns, providing useful context for subsequent analyses involving academic outcomes.
+- The correlation matrix suggests a clear “perceived learning environment” cluster, where support from lecturers, support from university, lecturer quality, training curriculum, study methods, and competitive class climate are moderately and positively related (most correlations roughly in the 0.32–0.58 range).
+- The strongest links appear around institutional/teaching factors: for example, support from lecturers correlates strongly with lecturer quality (r ≈ 0.58) and also shows a noticeable association with study methods (r ≈ 0.57).
+- Training curriculum also aligns with perceived teaching quality and environment, showing moderate positive correlations (e.g., with lecturer quality r ≈ 0.56, and with competitive class r ≈ 0.51).
+- Time with friends tends to have small negative correlations with academic/support-related variables (around −0.07 to −0.13), implying that more social time is weakly associated with lower ratings on study behaviours/support perceptions, though the effects are modest.
 
 ## Insight 5: Study–social media trade-off across daily study time groups
 
