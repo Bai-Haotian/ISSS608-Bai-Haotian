@@ -252,7 +252,7 @@ ggplot() +
   xlab("") +
   ylab("No. of Visitors") +
   theme_tufte(base_family = "sans")
-```quarto clean
+```
 
 ## Plotting Slopegraph
 

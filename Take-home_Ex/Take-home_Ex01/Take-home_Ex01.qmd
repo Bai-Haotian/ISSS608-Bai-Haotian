@@ -2,6 +2,7 @@
 title: "Take-home Exercise 1"
 author: "Bai Haotian"
 ---
+
 # Overview
 
 ## Setting the scene
@@ -16,19 +17,19 @@ In this take-home exercise, visually-driven exploratory data analysis (EDA) tech
 
 Specifically, this analysis aims to:
 
-- explore the overall distribution of students’ learning outcomes measured by GPA  
+-   explore the overall distribution of students’ learning outcomes measured by GPA
 
-- examine students’ perceptions of key learning-related factors, such as study methods, lecturer support, curriculum suitability, and learning environment  
+-   examine students’ perceptions of key learning-related factors, such as study methods, lecturer support, curriculum suitability, and learning environment
 
-- compare differences in learning perceptions and behaviors across different levels of academic performance  
+-   compare differences in learning perceptions and behaviors across different levels of academic performance
 
-- identify meaningful patterns and contrasts that provide insights into factors associated with better learning outcomes  
+-   identify meaningful patterns and contrasts that provide insights into factors associated with better learning outcomes
 
 # Getting started
 
 ## Load packages
 
-The following R packages are loaded to support data wrangling and visually-driven exploratory data analysis.  
+The following R packages are loaded to support data wrangling and visually-driven exploratory data analysis.\
 The **tidyverse** family is used for data processing, while **ggplot2** and its extensions are used for data visualisation.
 
 ```{r}
@@ -46,8 +47,8 @@ pacman::p_load(
 
 ## Import data
 
-The dataset used in this exercise is a survey dataset on factors affecting learning outcomes of students at the University of Education, Vietnam National University, Hanoi.  
-The dataset was retrieved from Mendeley Data and is provided in Excel format.  
+The dataset used in this exercise is a survey dataset on factors affecting learning outcomes of students at the University of Education, Vietnam National University, Hanoi.\
+The dataset was retrieved from Mendeley Data and is provided in Excel format.\
 We import this dataset as `raw_data`.
 
 ```{r}
@@ -59,7 +60,7 @@ glimpse(raw_data)
 
 ## Data pre-processing
 
-We first take an initial look at the dataset to understand its structure and variable types.  
+We first take an initial look at the dataset to understand its structure and variable types.\
 We then check whether there are any duplicate records in the survey responses.
 
 ```{r}
@@ -128,9 +129,9 @@ glimpse(analysis_data)
 
 ## Insight 1: Distribution of students’ learning outcomes (GPA)
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Plot
+
 ```{r echo=FALSE}
 gpa_order <- c(
   "Poor (<2.0)",
@@ -155,7 +156,9 @@ analysis_data %>%
     axis.text.x = element_text(size = 10)
   )
 ```
+
 ### Code
+
 ```{r eval=FALSE}
 gpa_order <- c(
   "Poor (<2.0)",
@@ -182,7 +185,6 @@ analysis_data %>%
     y = "Number of Students"
   ) +
   theme_minimal()### Code
-```{r eval=FALSE}
 analysis_data %>%
   ggplot(aes(x = gpa)) +
   geom_bar(fill = "#4E79A7") +
@@ -194,17 +196,18 @@ analysis_data %>%
   theme_minimal()
 ```
 :::
+
 ### Insights
 
-- The distribution of GPA shows that most students fall within the middle performance categories, particularly *Fair (2.5–3.2)* and *Good (3.2–3.6)*.
-- Relatively fewer students are observed at the extreme ends of the distribution, namely *Poor (<2.0)* and *Excellent (>3.6)*.
-- This pattern suggests that student academic performance is largely concentrated around average levels, indicating that incremental improvements among mid-performing students could lead to substantial overall gains in learning outcomes.
+-   The distribution of GPA shows that most students fall within the middle performance categories, particularly *Fair (2.5–3.2)* and *Good (3.2–3.6)*.
+-   Relatively fewer students are observed at the extreme ends of the distribution, namely *Poor (\<2.0)* and *Excellent (\>3.6)*.
+-   This pattern suggests that student academic performance is largely concentrated around average levels, indicating that incremental improvements among mid-performing students could lead to substantial overall gains in learning outcomes.
 
 ## Insight 2: GPA composition differs across daily study-time groups (Time_Studying)
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Plot
+
 ```{r echo=FALSE}
 library(tidyverse)
 library(scales)
@@ -250,7 +253,9 @@ analysis_data %>%
     legend.text = element_text(size = 10)
   )
 ```
+
 ### Code
+
 ```{r eval=FALSE}
 analysis_data %>%
   mutate(
@@ -271,17 +276,18 @@ analysis_data %>%
   theme_minimal()
 ```
 :::
+
 ### Insights
 
-- Students who study longer per day tend to show a higher share of upper GPA categories (Good and Excellent) in the composition.
-- Lower study-time groups are more concentrated in the mid-range categories, particularly Fair and Average.
-- Overall, the stacked proportions indicate that study time is associated with a shift in GPA distribution toward higher performance groups.
+-   Students who study longer per day tend to show a higher share of upper GPA categories (Good and Excellent) in the composition.
+-   Lower study-time groups are more concentrated in the mid-range categories, particularly Fair and Average.
+-   Overall, the stacked proportions indicate that study time is associated with a shift in GPA distribution toward higher performance groups.
 
 ## Insight 3: Relationship between lecture support and students’ GPA performance
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Plot
+
 ```{r echo=FALSE}
 library(tidyverse)
 library(scales)
@@ -327,7 +333,9 @@ analysis_data %>%
     legend.text = element_text(size = 10)
   )
 ```
+
 ### Code
+
 ```{r eval=FALSE}
 analysis_data %>%
   mutate(
@@ -348,16 +356,17 @@ analysis_data %>%
   theme_minimal()
 ```
 :::
+
 ### Insights
 
-- The composition of GPA categories varies across different levels of perceived lecture support.Students who report higher levels of lecture support tend to have a larger proportion in the Good (3.2–3.6) and Excellent (>3.6) GPA categories, while lower support levels are associated with a higher share of Poor and Below Average performance.
-- This suggests that perceived instructional support may play an important role in enhancing students’ academic outcomes, highlighting the value of effective teaching practices and academic guidance.
+-   The composition of GPA categories varies across different levels of perceived lecture support.Students who report higher levels of lecture support tend to have a larger proportion in the Good (3.2–3.6) and Excellent (\>3.6) GPA categories, while lower support levels are associated with a higher share of Poor and Below Average performance.
+-   This suggests that perceived instructional support may play an important role in enhancing students’ academic outcomes, highlighting the value of effective teaching practices and academic guidance.
 
 ## Insight 4: Association between learning behaviours and perceived learning environment
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Plot
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(dplyr)
@@ -386,7 +395,9 @@ ggstatsplot::ggcorrmat(
   subtitle = "Pearson correlation (lower triangle); reordered by clustering"
 )
 ```
+
 ### Code
+
 ```{r eval=FALSE}
 library(dplyr)
 library(ggstatsplot)
@@ -415,18 +426,19 @@ ggstatsplot::ggcorrmat(
 )
 ```
 :::
+
 ### Insights
 
-- The correlation matrix suggests a clear “perceived learning environment” cluster, where support from lecturers, support from university, lecturer quality, training curriculum, study methods, and competitive class climate are moderately and positively related (most correlations roughly in the 0.32–0.58 range).
-- The strongest links appear around institutional/teaching factors: for example, support from lecturers correlates strongly with lecturer quality (r ≈ 0.58) and also shows a noticeable association with study methods (r ≈ 0.57).
-- Training curriculum also aligns with perceived teaching quality and environment, showing moderate positive correlations (e.g., with lecturer quality r ≈ 0.56, and with competitive class r ≈ 0.51).
-- Time with friends tends to have small negative correlations with academic/support-related variables (around −0.07 to −0.13), implying that more social time is weakly associated with lower ratings on study behaviours/support perceptions, though the effects are modest.
+-   The correlation matrix suggests a clear “perceived learning environment” cluster, where support from lecturers, support from university, lecturer quality, training curriculum, study methods, and competitive class climate are moderately and positively related (most correlations roughly in the 0.32–0.58 range).
+-   The strongest links appear around institutional/teaching factors: for example, support from lecturers correlates strongly with lecturer quality (r ≈ 0.58) and also shows a noticeable association with study methods (r ≈ 0.57).
+-   Training curriculum also aligns with perceived teaching quality and environment, showing moderate positive correlations (e.g., with lecturer quality r ≈ 0.56, and with competitive class r ≈ 0.51).
+-   Time with friends tends to have small negative correlations with academic/support-related variables (around −0.07 to −0.13), implying that more social time is weakly associated with lower ratings on study behaviours/support perceptions, though the effects are modest.
 
 ## Insight 5: Study–social media trade-off across daily study time groups
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Plot
+
 ```{r echo=FALSE}
 study_order <- c(
   "under 2 hours",
@@ -480,7 +492,9 @@ ggplot(plot_data5, aes(x = study_cat, y = friends_num)) +
     axis.text.y = element_text(size = 10)
   )
 ```
+
 ### Code
+
 ```{r eval=FALSE}
 study_order <- c(
   "under 2 hours",
@@ -535,17 +549,18 @@ ggplot(plot_data5, aes(x = study_cat, y = friends_num)) +
   )
 ```
 :::
+
 ### Insights
 
-- The distribution view allows us to compare how social media time shifts across different daily study-time groups, instead of just comparing counts.
-- If higher study-time groups show their density concentrated toward the lower social media categories, it suggests a time-allocation trade-off: students who study more tend to spend less time on social media.
-- If some study-time groups still show a wide spread (e.g., many students with both high studying and high social media), it implies study time and social media time can co-exist, possibly reflecting multitasking or time-management differences.
+-   The distribution view allows us to compare how social media time shifts across different daily study-time groups, instead of just comparing counts.
+-   If higher study-time groups show their density concentrated toward the lower social media categories, it suggests a time-allocation trade-off: students who study more tend to spend less time on social media.
+-   If some study-time groups still show a wide spread (e.g., many students with both high studying and high social media), it implies study time and social media time can co-exist, possibly reflecting multitasking or time-management differences.
 
 ## Insight 6: Study methods across perceived institutional and lecturer support levels
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Plot
+
 ```{r echo=FALSE}
 support_order <- c(
   "Very low",
@@ -593,7 +608,9 @@ ggplot(plot_data6,
     axis.text.y = element_text(size = 10)
   )
 ```
+
 ### Code
+
 ```{r eval=FALSE}
 support_order <- c(
   "Very low",
@@ -636,16 +653,16 @@ ggplot(plot_data6,
   theme_minimal()
 ```
 :::
+
 ### Insights
 
-- The distribution of study methods varies systematically across perceived levels of institutional and lecturer support.
-- Higher perceived support levels are generally associated with higher median study-method scores, suggesting that supportive learning environments may encourage more effective or diverse learning strategies.
-- The faceted view highlights that lecturer support further moderates this relationship, indicating that both institutional and instructional factors jointly shape students’ learning behaviours.
+-   The distribution of study methods varies systematically across perceived levels of institutional and lecturer support.
+-   Higher perceived support levels are generally associated with higher median study-method scores, suggesting that supportive learning environments may encourage more effective or diverse learning strategies.
+-   The faceted view highlights that lecturer support further moderates this relationship, indicating that both institutional and instructional factors jointly shape students’ learning behaviours.
 
 ## Insight 7: Learning environment profiles across study time groups
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Plot
 
 ```{r echo=FALSE}
@@ -709,7 +726,9 @@ ggplot(profile_data,
     legend.title = element_text(size = 10)
   )
 ```
+
 ### Code
+
 ```{r eval=FALSE}
 profile_vars <- c(
   "study_methods",
@@ -758,11 +777,12 @@ ggplot(profile_data,
   theme_minimal()
 ```
 :::
+
 ### Insights
 
-- Students with higher daily study time exhibit a distinct learning environment profile characterised by stronger study methods, higher perceived institutional and lecturer support, and more positive evaluations of curriculum quality.
-- Lower study-time groups show relatively higher social engagement and weaker alignment across academic-support dimensions, suggesting different learning–social trade-offs.
-- The multi-dimensional profiles highlight that study behaviour is embedded within a broader learning ecosystem, where institutional, instructional, and social factors jointly vary with study intensity.
+-   Students with higher daily study time exhibit a distinct learning environment profile characterised by stronger study methods, higher perceived institutional and lecturer support, and more positive evaluations of curriculum quality.
+-   Lower study-time groups show relatively higher social engagement and weaker alignment across academic-support dimensions, suggesting different learning–social trade-offs.
+-   The multi-dimensional profiles highlight that study behaviour is embedded within a broader learning ecosystem, where institutional, instructional, and social factors jointly vary with study intensity.
 
 ### Summary and conclusion
 
@@ -779,11 +799,9 @@ Finally, a multi-dimensional profiling of learning-related variables reveals tha
 Overall, this EDA provides a comprehensive overview of the structure and variability of students’ learning experiences. The findings serve as a foundation for subsequent analytical tasks and demonstrate how exploratory visualisation can be used to generate meaningful insights into educational datasets.
 
 ### References
-Wilke, C. O. (2019). Fundamentals of Data Visualization: A Primer on Making Informative and Compelling Figures.
-https://clauswilke.com/dataviz/
 
-Wickham, H., Çetinkaya-Rundel, M., & Grolemund, G. (2023). R for Data Science (2nd ed.). O’Reilly Media.
-https://r4ds.hadley.nz/
+Wilke, C. O. (2019). Fundamentals of Data Visualization: A Primer on Making Informative and Compelling Figures. https://clauswilke.com/dataviz/
 
-Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer.
-https://ggplot2-book.org/
+Wickham, H., Çetinkaya-Rundel, M., & Grolemund, G. (2023). R for Data Science (2nd ed.). O’Reilly Media. https://r4ds.hadley.nz/
+
+Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer. https://ggplot2-book.org/

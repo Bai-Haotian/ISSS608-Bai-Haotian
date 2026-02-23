@@ -17,9 +17,9 @@ pacman::p_load(ggrepel, patchwork,
 ```
 
 ## Importing the data
-There are a total of seven attributes in the exam_data tibble data frame. Four of them are categorical data type and the other three are in continuous data type.
-The categorical attributes are: ID, CLASS, GENDER and RACE.
-The continuous attributes are: MATHS, ENGLISH and SCIENCE.
+
+There are a total of seven attributes in the exam_data tibble data frame. Four of them are categorical data type and the other three are in continuous data type. The categorical attributes are: ID, CLASS, GENDER and RACE. The continuous attributes are: MATHS, ENGLISH and SCIENCE.
+
 ```{r}
 exam_data <- read_csv("data/Exam_data.csv")
 ```
@@ -28,8 +28,7 @@ exam_data <- read_csv("data/Exam_data.csv")
 
 After studying the section on Data and Aesthetic Mapping, I gained a clearer understanding of how aes() functions in ggplot2. Rather than controlling the visual appearance directly, aesthetic mapping defines the relationship between data variables and visual properties such as position, color, or size.
 
-I noticed that Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-So I use `linewidth` instead.
+I noticed that Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0. So I use `linewidth` instead.
 
 ```{r}
 ggplot(data=exam_data, 
@@ -48,8 +47,7 @@ ggplot(data=exam_data,
 
 ## Working with ggrepel
 
-I noticed that Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-So I use `linewidth` instead.
+I noticed that Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0. So I use `linewidth` instead.
 
 ```{r}
 ggplot(data=exam_data, 
@@ -109,6 +107,7 @@ ggplot(data=exam_data,
   ggtitle("Distribution of Maths scores") +
   theme_ipsum()
 ```
+
 ```{r}
 ggplot(data=exam_data, 
              aes(x = MATHS)) +
@@ -121,6 +120,7 @@ ggplot(data=exam_data,
               base_size = 15,
               grid = "Y")
 ```
+
 axis_title_size argument is used to increase the font size of the axis title to 18, base_size argument is used to increase the default axis label to 15, and grid argument is used to remove the x-axis grid lines.
 
 ## Beyond Single Graph
@@ -135,7 +135,9 @@ p1 <- ggplot(data=exam_data,
   coord_cartesian(xlim=c(0,100)) +
   ggtitle("Distribution of Maths scores")
 ```
+
 Next
+
 ```{r}
 p2 <- ggplot(data=exam_data, 
              aes(x = ENGLISH)) +
@@ -146,7 +148,9 @@ p2 <- ggplot(data=exam_data,
   coord_cartesian(xlim=c(0,100)) +
   ggtitle("Distribution of English scores")
 ```
+
 Lastly, we will draw a scatterplot for English score versus Maths score by as shown below
+
 ```{r}
 p3 <- ggplot(data=exam_data, 
              aes(x= MATHS, 
@@ -163,9 +167,7 @@ p3 <- ggplot(data=exam_data,
 
 Patchwork package has a very simple syntax where we can create layouts super easily. Here’s the general syntax that combines:
 
-Two-Column Layout using the Plus Sign +.
-Parenthesis () to create a subplot group.
-Two-Row Layout using the Division Sign /
+Two-Column Layout using the Plus Sign +. Parenthesis () to create a subplot group. Two-Row Layout using the Division Sign /
 
 ## Combining two ggplot2 graphs
 
@@ -177,9 +179,7 @@ p1 + p2
 
 We can plot more complex composite by using appropriate operators. For example, the composite figure below is plotted by using:
 
-"/" operator to stack two ggplot2 graphs,
-"|" operator to place the plots beside each other,
-"()" operator the define the sequence of the plotting.
+"/" operator to stack two ggplot2 graphs, "\|" operator to place the plots beside each other, "()" operator the define the sequence of the plotting.
 
 ```{r}
 (p1 / p2) | p3

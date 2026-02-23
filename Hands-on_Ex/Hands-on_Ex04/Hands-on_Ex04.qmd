@@ -7,12 +7,7 @@ author: "Bai Haotian"
 
 ## Install and launching R packages
 
-The code chunk below will be used to accomplish the task.
-readr for importing csv into R.
-FunnelPlotR for creating funnel plot.
-ggplot2 for creating funnel plot manually.
-knitr for building static html table.
-plotly for creating interactive funnel plot.
+The code chunk below will be used to accomplish the task. readr for importing csv into R. FunnelPlotR for creating funnel plot. ggplot2 for creating funnel plot manually. knitr for building static html table. plotly for creating interactive funnel plot.
 
 ```{r}
 pacman::p_load(tidyverse, FunnelPlotR, plotly, knitr)
@@ -62,9 +57,7 @@ funnel_plot(
 )
 ```
 
-A funnel plot object with 267 points of which 7 are outliers. 
-Plot is adjusted for overdispersion. 
-Things to learn from the code chunk above. + data_type argument is used to change from default “SR” to “PR” (i.e. proportions). + xrange and yrange are used to set the range of x-axis and y-axis
+A funnel plot object with 267 points of which 7 are outliers. Plot is adjusted for overdispersion. Things to learn from the code chunk above. + data_type argument is used to change from default “SR” to “PR” (i.e. proportions). + xrange and yrange are used to set the range of x-axis and y-axis
 
 ## FunnelPlotR methods: Makeover 2
 
@@ -86,9 +79,7 @@ funnel_plot(
 )
 ```
 
-A funnel plot object with 267 points of which 7 are outliers. 
-Plot is adjusted for overdispersion. 
-Things to learn from the code chunk above. label = NA argument is to removed the default label outliers feature.title argument is used to add plot title. x_label and y_label arguments are used to add/edit x-axis and y-axis titles.
+A funnel plot object with 267 points of which 7 are outliers. Plot is adjusted for overdispersion. Things to learn from the code chunk above. label = NA argument is to removed the default label outliers feature.title argument is used to add plot title. x_label and y_label arguments are used to add/edit x-axis and y-axis titles.
 
 ## Funnel Plot for Fair Visual Comparison: ggplot2 methods
 
@@ -186,12 +177,7 @@ fp_ggplotly
 
 For the purpose of this exercise, the following R packages will be used, they are:
 
-ggridges, a ggplot2 extension specially designed for plotting ridgeline plots,
-ggdist, a ggplot2 extension spacially desgin for visualising distribution and uncertainty,
-tidyverse, a family of R packages to meet the modern data science and visual communication needs,
-ggthemes, a ggplot extension that provides the user additional themes, scales, and geoms for the ggplots package, and
-colorspace, an R package provides a broad toolbox for selecting individual colors or color palettes, manipulating these colors, and employing them in various kinds of visualisations.
-The code chunk below will be used load these R packages into RStudio environment.
+ggridges, a ggplot2 extension specially designed for plotting ridgeline plots, ggdist, a ggplot2 extension spacially desgin for visualising distribution and uncertainty, tidyverse, a family of R packages to meet the modern data science and visual communication needs, ggthemes, a ggplot extension that provides the user additional themes, scales, and geoms for the ggplots package, and colorspace, an R package provides a broad toolbox for selecting individual colors or color palettes, manipulating these colors, and employing them in various kinds of visualisations. The code chunk below will be used load these R packages into RStudio environment.
 
 ```{r}
 pacman::p_load(ggdist, ggridges, ggthemes,
@@ -200,8 +186,7 @@ pacman::p_load(ggdist, ggridges, ggthemes,
 
 ## Data import
 
-For the purpose of this exercise, Exam_data.csv will be used.
-In the code chunk below, read_csv() of readr package is used to import Exam_data.csv into R and saved it into a tibble data.frame.
+For the purpose of this exercise, Exam_data.csv will be used. In the code chunk below, read_csv() of readr package is used to import Exam_data.csv into R and saved it into a tibble data.frame.
 
 ```{r}
 exam <- read_csv("data/Exam_data.csv")
@@ -318,8 +303,7 @@ Raincloud Plot is a data visualisation techniques that produces a half-density t
 
 ## Plotting a Half Eye graph
 
-First, we will plot a Half-Eye graph by using stat_halfeye() of ggdist package.
-This produces a Half Eye visualization, which is contains a half-density and a slab-interval.
+First, we will plot a Half-Eye graph by using stat_halfeye() of ggdist package. This produces a Half Eye visualization, which is contains a half-density and a slab-interval.
 
 ```{r}
 ggplot(exam, 
@@ -467,9 +451,7 @@ ggbetweenstats(
 )
 ```
 
-“ns” → only non-significant
-“s” → only significant
-“all” → everything
+“ns” → only non-significant “s” → only significant “all” → everything
 
 ## Significant Test of Correlation: ggscatterstats()
 
@@ -508,12 +490,7 @@ ggbarstats(exam1,
 
 For the purpose of this exercise, the following R packages will be used, they are:
 
-tidyverse, a family of R packages for data science process,
-plotly for creating interactive plot,
-gganimate for creating animation plot,
-DT for displaying interactive html table,
-crosstalk for for implementing cross-widget interactions (currently, linked brushing and filtering), and
-ggdist for visualising distribution and uncertainty.
+tidyverse, a family of R packages for data science process, plotly for creating interactive plot, gganimate for creating animation plot, DT for displaying interactive html table, crosstalk for for implementing cross-widget interactions (currently, linked brushing and filtering), and ggdist for visualising distribution and uncertainty.
 
 ```{r}
 pacman::p_load(plotly, crosstalk, DT, 
@@ -670,10 +647,7 @@ exam %>%
     subtitle = "Mean Point + Multiple-interval plot")
 ```
 
-For example, in the code chunk below the following arguments are used:
-.width = 0.95
-.point = median
-.interval = qi
+For example, in the code chunk below the following arguments are used: .width = 0.95 .point = median .interval = qi
 
 ```{r}
 exam %>%
@@ -687,7 +661,6 @@ exam %>%
 ```
 
 ## Visualizing the uncertainty of point estimates: ggdist methods
-
 
 ```{r}
 exam %>%
