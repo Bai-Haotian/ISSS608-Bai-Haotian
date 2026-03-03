@@ -1447,5 +1447,803 @@
     "title": "Hands-on Exercise 4",
     "section": "",
     "text": "Next, the code chunk below will be used to build the HOPs.\n\nggplot(data = exam, \n       (aes(x = factor(RACE), \n            y = MATHS))) +\n  geom_point(position = position_jitter(\n    height = 0.3, \n    width = 0.05), \n    size = 0.4, \n    color = \"#0072B2\", \n    alpha = 1/2) +\n  geom_hpline(data = sampler(25, \n                             group = RACE), \n              height = 0.6, \n              color = \"#D55E00\") +\n  theme_bw() + \n  transition_states(.draw, 1, 3)\n\nWarning in geom_hpline(data = sampler(25, group = RACE), height = 0.6, color =\n\"#D55E00\"): Ignoring unknown parameters: `height`"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html",
+    "title": "Hands-on Exercise 5",
+    "section": "",
+    "text": "For this exercise, two main R packages will be used in this hands-on exercise, they are:\nggtern, a ggplot extension specially designed to plot ternary diagrams. The package will be used to plot static ternary plots. Plotly R, an R package for creating interactive web-based graphs via plotly’s JavaScript graphing library, plotly.js . The plotly R libary contains the ggplotly function, which will convert ggplot2 figures into a Plotly object. We will also need to ensure that selected tidyverse family packages namely: readr, dplyr and tidyr are also installed and loaded.\nThe code chunks below will accomplish the task.\n\npacman::p_load(plotly, ggtern, tidyverse)\n\n\n\n\nFor the purpose of this hands-on exercise, the Singapore Residents by Planning AreaSubzone, Age Group, Sex and Type of Dwelling, June 2000-2018 data will be used. The data set has been downloaded and included in the data sub-folder of the hands-on exercise folder. It is called respopagsex2000to2018_tidy.csv and is in csv file format. To important respopagsex2000to2018_tidy.csv into R, read_csv() function of readr package will be used.\n\n#Reading the data into R environment\npop_data &lt;- read_csv(\"data/respopagsex2000to2018_tidy.csv\") \n\nRows: 108126 Columns: 5\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (3): PA, SZ, AG\ndbl (2): Year, Population\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\n\n\n\nNext, use the mutate() function of dplyr package to derive three new measures, namely: young, active, and old.\n\n#Deriving the young, economy active and old measures\nagpop_mutated &lt;- pop_data %&gt;%\n  mutate(`Year` = as.character(Year))%&gt;%\n  spread(AG, Population) %&gt;%\n  mutate(YOUNG = rowSums(.[4:8]))%&gt;%\n  mutate(ACTIVE = rowSums(.[9:16]))  %&gt;%\n  mutate(OLD = rowSums(.[17:21])) %&gt;%\n  mutate(TOTAL = rowSums(.[22:24])) %&gt;%\n  filter(Year == 2018)%&gt;%\n  filter(TOTAL &gt; 0)\n\n\n\n\nUse ggtern() function of ggtern package to create a simple ternary plot.\n\n#Building the static ternary plot\nggtern(data=agpop_mutated,aes(x=YOUNG,y=ACTIVE, z=OLD)) +\n  geom_point()\n\n\n\n\n\n\n\n\n\n#Building the static ternary plot\nggtern(data=agpop_mutated, aes(x=YOUNG,y=ACTIVE, z=OLD)) +\n  geom_point() +\n  labs(title=\"Population structure, 2015\") +\n  theme_rgbw()\n\n\n\n\n\n\n\n\n\n\n\nThe code below create an interactive ternary plot using plot_ly() function of Plotly R.\n\n# reusable function for creating annotation object\nlabel &lt;- function(txt) {\n  list(\n    text = txt, \n    x = 0.1, y = 1,\n    ax = 0, ay = 0,\n    xref = \"paper\", yref = \"paper\", \n    align = \"center\",\n    font = list(family = \"serif\", size = 15, color = \"white\"),\n    bgcolor = \"#b3b3b3\", bordercolor = \"black\", borderwidth = 2\n  )\n}\n\n# reusable function for axis formatting\naxis &lt;- function(txt) {\n  list(\n    title = txt, tickformat = \".0%\", tickfont = list(size = 10)\n  )\n}\n\nternaryAxes &lt;- list(\n  aaxis = axis(\"Young\"), \n  baxis = axis(\"Active\"), \n  caxis = axis(\"Old\")\n)\n\n# Initiating a plotly visualization \nplot_ly(\n  agpop_mutated, \n  a = ~YOUNG, \n  b = ~ACTIVE, \n  c = ~OLD, \n  color = I(\"black\"), \n  type = \"scatterternary\"\n) %&gt;%\n  layout(\n    annotations = label(\"Ternary Markers\"), \n    ternary = ternaryAxes\n  )\n\nNo scatterternary mode specifed:\n  Setting the mode to markers\n  Read more about this attribute -&gt; https://plotly.com/r/reference/#scatter-mode"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#install-and-launching-r-packages",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#install-and-launching-r-packages",
+    "title": "Hands-on Exercise 5",
+    "section": "",
+    "text": "For this exercise, two main R packages will be used in this hands-on exercise, they are:\nggtern, a ggplot extension specially designed to plot ternary diagrams. The package will be used to plot static ternary plots. Plotly R, an R package for creating interactive web-based graphs via plotly’s JavaScript graphing library, plotly.js . The plotly R libary contains the ggplotly function, which will convert ggplot2 figures into a Plotly object. We will also need to ensure that selected tidyverse family packages namely: readr, dplyr and tidyr are also installed and loaded.\nThe code chunks below will accomplish the task.\n\npacman::p_load(plotly, ggtern, tidyverse)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-the-data",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-the-data",
+    "title": "Hands-on Exercise 5",
+    "section": "",
+    "text": "For the purpose of this hands-on exercise, the Singapore Residents by Planning AreaSubzone, Age Group, Sex and Type of Dwelling, June 2000-2018 data will be used. The data set has been downloaded and included in the data sub-folder of the hands-on exercise folder. It is called respopagsex2000to2018_tidy.csv and is in csv file format. To important respopagsex2000to2018_tidy.csv into R, read_csv() function of readr package will be used.\n\n#Reading the data into R environment\npop_data &lt;- read_csv(\"data/respopagsex2000to2018_tidy.csv\") \n\nRows: 108126 Columns: 5\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (3): PA, SZ, AG\ndbl (2): Year, Population\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#preparing-the-data",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#preparing-the-data",
+    "title": "Hands-on Exercise 5",
+    "section": "",
+    "text": "Next, use the mutate() function of dplyr package to derive three new measures, namely: young, active, and old.\n\n#Deriving the young, economy active and old measures\nagpop_mutated &lt;- pop_data %&gt;%\n  mutate(`Year` = as.character(Year))%&gt;%\n  spread(AG, Population) %&gt;%\n  mutate(YOUNG = rowSums(.[4:8]))%&gt;%\n  mutate(ACTIVE = rowSums(.[9:16]))  %&gt;%\n  mutate(OLD = rowSums(.[17:21])) %&gt;%\n  mutate(TOTAL = rowSums(.[22:24])) %&gt;%\n  filter(Year == 2018)%&gt;%\n  filter(TOTAL &gt; 0)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#plotting-a-static-ternary-diagram",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#plotting-a-static-ternary-diagram",
+    "title": "Hands-on Exercise 5",
+    "section": "",
+    "text": "Use ggtern() function of ggtern package to create a simple ternary plot.\n\n#Building the static ternary plot\nggtern(data=agpop_mutated,aes(x=YOUNG,y=ACTIVE, z=OLD)) +\n  geom_point()\n\n\n\n\n\n\n\n\n\n#Building the static ternary plot\nggtern(data=agpop_mutated, aes(x=YOUNG,y=ACTIVE, z=OLD)) +\n  geom_point() +\n  labs(title=\"Population structure, 2015\") +\n  theme_rgbw()"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#plotting-an-interative-ternary-diagram",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#plotting-an-interative-ternary-diagram",
+    "title": "Hands-on Exercise 5",
+    "section": "",
+    "text": "The code below create an interactive ternary plot using plot_ly() function of Plotly R.\n\n# reusable function for creating annotation object\nlabel &lt;- function(txt) {\n  list(\n    text = txt, \n    x = 0.1, y = 1,\n    ax = 0, ay = 0,\n    xref = \"paper\", yref = \"paper\", \n    align = \"center\",\n    font = list(family = \"serif\", size = 15, color = \"white\"),\n    bgcolor = \"#b3b3b3\", bordercolor = \"black\", borderwidth = 2\n  )\n}\n\n# reusable function for axis formatting\naxis &lt;- function(txt) {\n  list(\n    title = txt, tickformat = \".0%\", tickfont = list(size = 10)\n  )\n}\n\nternaryAxes &lt;- list(\n  aaxis = axis(\"Young\"), \n  baxis = axis(\"Active\"), \n  caxis = axis(\"Old\")\n)\n\n# Initiating a plotly visualization \nplot_ly(\n  agpop_mutated, \n  a = ~YOUNG, \n  b = ~ACTIVE, \n  c = ~OLD, \n  color = I(\"black\"), \n  type = \"scatterternary\"\n) %&gt;%\n  layout(\n    annotations = label(\"Ternary Markers\"), \n    ternary = ternaryAxes\n  )\n\nNo scatterternary mode specifed:\n  Setting the mode to markers\n  Read more about this attribute -&gt; https://plotly.com/r/reference/#scatter-mode"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#overview",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#overview",
+    "title": "Hands-on Exercise 5",
+    "section": "Overview",
+    "text": "Overview\nCorrelation coefficient is a popular statistic that use to measure the type and strength of the relationship between two variables. The values of a correlation coefficient ranges between -1.0 and 1.0. A correlation coefficient of 1 shows a perfect linear relationship between the two variables, while a -1.0 shows a perfect inverse relationship between the two variables. A correlation coefficient of 0.0 shows no linear relationship between the two variables.\nWhen multivariate data are used, the correlation coefficeints of the pair comparisons are displayed in a table form known as correlation matrix or scatterplot matrix.\nThere are three broad reasons for computing a correlation matrix.\nTo reveal the relationship between high-dimensional variables pair-wisely. To input into other analyses. For example, people commonly use correlation matrices as inputs for exploratory factor analysis, confirmatory factor analysis, structural equation models, and linear regression when excluding missing values pairwise. As a diagnostic when checking other analyses. For example, with linear regression a high amount of correlations suggests that the linear regression’s estimates will be unreliable. When the data is large, both in terms of the number of observations and the number of variables, Corrgram tend to be used to visually explore and analyse the structure and the patterns of relations among variables. It is designed based on two main schemes:\nRendering the value of a correlation to depict its sign and magnitude, and Reordering the variables in a correlation matrix so that “similar” variables are positioned adjacently, facilitating perception. In this hands-on exercise, you will learn how to plot data visualisation for visualising correlation matrix with R. It consists of three main sections. First, you will learn how to create correlation matrix using pairs() of R Graphics. Next, you will learn how to plot corrgram using corrplot package of R. Lastly, you will learn how to create an interactive correlation matrix using plotly R."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#install-and-launching-r-packages-1",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#install-and-launching-r-packages-1",
+    "title": "Hands-on Exercise 5",
+    "section": "Install and launching R packages",
+    "text": "Install and launching R packages\nBefore you get started, you are required to open a new Quarto document. Keep the default html authoring format.\nNext, you will use the code chunk below to install and launch corrplot, ggpubr, plotly and tidyverse in RStudio.\n\npacman::p_load(corrplot, ggstatsplot, tidyverse)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-and-preparing-the-data-set",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-and-preparing-the-data-set",
+    "title": "Hands-on Exercise 5",
+    "section": "Importing and Preparing The Data Set",
+    "text": "Importing and Preparing The Data Set\nIn this hands-on exercise, the Wine Quality Data Set of UCI Machine Learning Repository will be used. The data set consists of 13 variables and 6497 observations. For the purpose of this exercise, we have combined the red wine and white wine data into one data file. It is called wine_quality and is in csv file format."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-data",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-data",
+    "title": "Hands-on Exercise 5",
+    "section": "Importing Data",
+    "text": "Importing Data\nFirst, let us import the data into R by using read_csv() of readr package.\n\nwine &lt;- read_csv(\"data/wine_quality.csv\")\n\nRows: 6497 Columns: 13\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr  (1): type\ndbl (12): fixed acidity, volatile acidity, citric acid, residual sugar, chlo...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nNotice that beside quality and type, the rest of the variables are numerical and continuous data type."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#building-correlation-matrix-pairs-method",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#building-correlation-matrix-pairs-method",
+    "title": "Hands-on Exercise 5",
+    "section": "Building Correlation Matrix: pairs() method",
+    "text": "Building Correlation Matrix: pairs() method\nThere are more than one way to build scatterplot matrix with R. In this section, you will learn how to create a scatterplot matrix by using the pairs function of R Graphics.\nBefore you continue to the next step, you should read the syntax description of pairsfunction."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#building-a-basic-correlation-matrix",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#building-a-basic-correlation-matrix",
+    "title": "Hands-on Exercise 5",
+    "section": "Building a basic correlation matrix",
+    "text": "Building a basic correlation matrix\nFigure below shows the scatter plot matrix of Wine Quality Data. It is a 11 by 11 matrix.\n\npairs(wine[,1:11])\n\n\n\n\n\n\n\n\nThe required input of pairs() can be a matrix or data frame. The code chunk used to create the scatterplot matrix is relatively simple. It uses the default pairs function. Columns 2 to 12 of wine dataframe is used to build the scatterplot matrix. The variables are: fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates and alcohol.\n\npairs(wine[,2:12])"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#drawing-the-lower-corner",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#drawing-the-lower-corner",
+    "title": "Hands-on Exercise 5",
+    "section": "Drawing the lower corner",
+    "text": "Drawing the lower corner\npairs function of R Graphics provided many customisation arguments. For example, it is a common practice to show either the upper half or lower half of the correlation matrix instead of both. This is because a correlation matrix is symmetric.\nTo show the lower half of the correlation matrix, the upper.panel argument will be used as shown in the code chunk below.\n\npairs(wine[,2:12], upper.panel = NULL)\n\n\n\n\n\n\n\n\nSimilarly, you can display the upper half of the correlation matrix by using the code chun below.\n\npairs(wine[,2:12], lower.panel = NULL)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#including-with-correlation-coefficients",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#including-with-correlation-coefficients",
+    "title": "Hands-on Exercise 5",
+    "section": "Including with correlation coefficients",
+    "text": "Including with correlation coefficients\nTo show the correlation coefficient of each pair of variables instead of a scatter plot, panel.cor function will be used. This will also show higher correlations in a larger font.\nDon’t worry about the details for now-just type this code into your R session or script. Let’s have more fun way to display the correlation matrix.\n\npanel.cor &lt;- function(x, y, digits=2, prefix=\"\", cex.cor, ...) {\nusr &lt;- par(\"usr\")\non.exit(par(usr))\npar(usr = c(0, 1, 0, 1))\nr &lt;- abs(cor(x, y, use=\"complete.obs\"))\ntxt &lt;- format(c(r, 0.123456789), digits=digits)[1]\ntxt &lt;- paste(prefix, txt, sep=\"\")\nif(missing(cex.cor)) cex.cor &lt;- 0.8/strwidth(txt)\ntext(0.5, 0.5, txt, cex = cex.cor * (1 + r) / 2)\n}\n\npairs(wine[,2:12], \n      upper.panel = panel.cor)\n\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter\nWarning in par(usr): argument 1 does not name a graphical parameter"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#visualising-correlation-matrix-ggcormat",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#visualising-correlation-matrix-ggcormat",
+    "title": "Hands-on Exercise 5",
+    "section": "Visualising Correlation Matrix: ggcormat()",
+    "text": "Visualising Correlation Matrix: ggcormat()\nOne of the major limitation of the correlation matrix is that the scatter plots appear very cluttered when the number of observations is relatively large (i.e. more than 500 observations). To over come this problem, Corrgram data visualisation technique suggested by D. J. Murdoch and E. D. Chow (1996) and Friendly, M (2002) and will be used.\nThe are at least three R packages provide function to plot corrgram, they are:\ncorrgram ellipse corrplot On top that, some R package like ggstatsplot package also provides functions for building corrgram.\nIn this section, you will learn how to visualising correlation matrix by using ggcorrmat() of ggstatsplot package."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#the-basic-plot",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#the-basic-plot",
+    "title": "Hands-on Exercise 5",
+    "section": "The basic plot",
+    "text": "The basic plot\nOn of the advantage of using ggcorrmat() over many other methods to visualise a correlation matrix is it’s ability to provide a comprehensive and yet professional statistical report as shown in the figure below.\n\nggstatsplot::ggcorrmat(\n  data = wine, \n  cor.vars = 1:11)\n\n\n\n\n\n\n\n\n\nggstatsplot::ggcorrmat(\n  data = wine, \n  cor.vars = 1:11,\n  ggcorrplot.args = list(outline.color = \"black\", \n                         hc.order = TRUE,\n                         tl.cex = 10),\n  title    = \"Correlogram for wine dataset\",\n  subtitle = \"Four pairs are no significant at p &lt; 0.05\"\n)\n\n\n\n\n\n\n\n\nThings to learn from the code chunk above:\ncor.vars argument is used to compute the correlation matrix needed to build the corrgram. ggcorrplot.args argument provide additional (mostly aesthetic) arguments that will be passed to ggcorrplot::ggcorrplot function. The list should avoid any of the following arguments since they are already internally being used: corr, method, p.mat, sig.level, ggtheme, colors, lab, pch, legend.title, digits. The sample sub-code chunk can be used to control specific component of the plot such as the font size of the x-axis, y-axis, and the statistical report.\n\nggplot.component = list(\n    theme(text=element_text(size=5),\n      axis.text.x = element_text(size = 8),\n      axis.text.y = element_text(size = 8)))"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#building-multiple-plots",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#building-multiple-plots",
+    "title": "Hands-on Exercise 5",
+    "section": "Building multiple plots",
+    "text": "Building multiple plots\nSince ggstasplot is an extension of ggplot2, it also supports faceting. However the feature is not available in ggcorrmat() but in the grouped_ggcorrmat() of ggstatsplot.\n\ngrouped_ggcorrmat(\n  data = wine,\n  cor.vars = 1:11,\n  grouping.var = type,\n  type = \"robust\",\n  p.adjust.method = \"holm\",\n  plotgrid.args = list(ncol = 2),\n  ggcorrplot.args = list(outline.color = \"black\", \n                         hc.order = TRUE,\n                         tl.cex = 10),\n  annotation.args = list(\n    tag_levels = \"a\",\n    title = \"Correlogram for wine dataset\",\n    subtitle = \"The measures are: alcohol, sulphates, fixed acidity, citric acid, chlorides, residual sugar, density, free sulfur dioxide and volatile acidity\",\n    caption = \"Dataset: UCI Machine Learning Repository\"\n  )\n)\n\n\n\n\n\n\n\n\nThings to learn from the code chunk above:\nto build a facet plot, the only argument needed is grouping.var. Behind group_ggcorrmat(), patchwork package is used to create the multiplot. plotgrid.args argument provides a list of additional arguments passed to patchwork::wrap_plots, except for guides argument which is already separately specified earlier. Likewise, annotation.args argument is calling plot annotation arguments of patchwork package."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#visualising-correlation-matrix-using-corrplot-package",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#visualising-correlation-matrix-using-corrplot-package",
+    "title": "Hands-on Exercise 5",
+    "section": "Visualising Correlation Matrix using corrplot Package",
+    "text": "Visualising Correlation Matrix using corrplot Package\nIn this hands-on exercise, we will focus on corrplot. However, you are encouraged to explore the other two packages too.\nBefore getting started, you are required to read An Introduction to corrplot Package in order to gain basic understanding of corrplot package."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#getting-started-with-corrplot",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#getting-started-with-corrplot",
+    "title": "Hands-on Exercise 5",
+    "section": "Getting started with corrplot",
+    "text": "Getting started with corrplot\nBefore we can plot a corrgram using corrplot(), we need to compute the correlation matrix of wine data frame.\nIn the code chunk below, cor() of R Stats is used to compute the correlation matrix of wine data frame.\n\nwine.cor &lt;- cor(wine[, 1:11])\n\nNext, corrplot() is used to plot the corrgram by using all the default setting as shown in the code chunk below.\n\ncorrplot(wine.cor)\n\n\n\n\n\n\n\n\nNotice that the default visual object used to plot the corrgram is circle. The default layout of the corrgram is a symmetric matrix. The default colour scheme is diverging blue-red. Blue colours are used to represent pair variables with positive correlation coefficients and red colours are used to represent pair variables with negative correlation coefficients. The intensity of the colour or also know as saturation is used to represent the strength of the correlation coefficient. Darker colours indicate relatively stronger linear relationship between the paired variables. On the other hand, lighter colours indicates relatively weaker linear relationship."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-visual-geometrics",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-visual-geometrics",
+    "title": "Hands-on Exercise 5",
+    "section": "Working with visual geometrics",
+    "text": "Working with visual geometrics\nIn corrplot package, there are seven visual geometrics (parameter method) can be used to encode the attribute values. They are: circle, square, ellipse, number, shade, color and pie. The default is circle. As shown in the previous section, the default visual geometric of corrplot matrix is circle. However, this default setting can be changed by using the method argument as shown in the code chunk below.\n\ncorrplot(wine.cor, \n         method = \"ellipse\") \n\n\n\n\n\n\n\n\nFeel free to change the method argument to other supported visual geometrics."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-layout",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-layout",
+    "title": "Hands-on Exercise 5",
+    "section": "Working with layout",
+    "text": "Working with layout\ncorrplor() supports three layout types, namely: “full”, “upper” or “lower”. The default is “full” which display full matrix. The default setting can be changed by using the type argument of corrplot().\n\ncorrplot(wine.cor, \n         method = \"ellipse\", \n         type=\"lower\")\n\n\n\n\n\n\n\n\nThe default layout of the corrgram can be further customised. For example, arguments diag and tl.col are used to turn off the diagonal cells and to change the axis text label colour to black colour respectively as shown in the code chunk and figure below.\n\ncorrplot(wine.cor, \n         method = \"ellipse\", \n         type=\"lower\",\n         diag = FALSE,\n         tl.col = \"black\")\n\n\n\n\n\n\n\n\nPlease feel free to experiment with other layout design argument such as tl.pos, tl.cex, tl.offset, cl.pos, cl.cex and cl.offset, just to mention a few of them."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-mixed-layout",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-mixed-layout",
+    "title": "Hands-on Exercise 5",
+    "section": "Working with mixed layout",
+    "text": "Working with mixed layout\nWith corrplot package, it is possible to design corrgram with mixed visual matrix of one half and numerical matrix on the other half. In order to create a coorgram with mixed layout, the corrplot.mixed(), a wrapped function for mixed visualisation style will be used.\nFigure below shows a mixed layout corrgram plotted using wine quality data.\n\ncorrplot.mixed(wine.cor, \n               lower = \"ellipse\", \n               upper = \"number\",\n               tl.pos = \"lt\",\n               diag = \"l\",\n               tl.col = \"black\")\n\n\n\n\n\n\n\n\nThe code chunk used to plot the corrgram are shown below.\n\ncorrplot.mixed(wine.cor, \n               lower = \"ellipse\", \n               upper = \"number\",\n               tl.pos = \"lt\",\n               diag = \"l\",\n               tl.col = \"black\")\n\n\n\n\n\n\n\n\nNotice that argument lower and upper are used to define the visualisation method used. In this case ellipse is used to map the lower half of the corrgram and numerical matrix (i.e. number) is used to map the upper half of the corrgram. The argument tl.pos, on the other, is used to specify the placement of the axis label. Lastly, the diag argument is used to specify the glyph on the principal diagonal of the corrgram."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#combining-corrgram-with-the-significant-test",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#combining-corrgram-with-the-significant-test",
+    "title": "Hands-on Exercise 5",
+    "section": "Combining corrgram with the significant test",
+    "text": "Combining corrgram with the significant test\nIn statistical analysis, we are also interested to know which pair of variables their correlation coefficients are statistically significant.\nFigure below shows a corrgram combined with the significant test. The corrgram reveals that not all correlation pairs are statistically significant. For example the correlation between total sulfur dioxide and free surfur dioxide is statistically significant at significant level of 0.1 but not the pair between total sulfur dioxide and citric acid. With corrplot package, we can use the cor.mtest() to compute the p-values and confidence interval for each pair of variables.\n\nwine.sig = cor.mtest(wine.cor, conf.level= .95)\n\nWe can then use the p.mat argument of corrplot function as shown in the code chunk below.\n\ncorrplot(wine.cor,\n         method = \"number\",\n         type = \"lower\",\n         diag = FALSE,\n         tl.col = \"black\",\n         tl.srt = 45,\n         p.mat = wine.sig$p,\n         sig.level = .05)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#reorder-a-corrgram",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#reorder-a-corrgram",
+    "title": "Hands-on Exercise 5",
+    "section": "Reorder a corrgram",
+    "text": "Reorder a corrgram\nMatrix reorder is very important for mining the hiden structure and pattern in a corrgram. By default, the order of attributes of a corrgram is sorted according to the correlation matrix (i.e. “original”). The default setting can be over-write by using the order argument of corrplot(). Currently, corrplot package support four sorting methods, they are:\n“AOE” is for the angular order of the eigenvectors. See Michael Friendly (2002) for details. “FPC” for the first principal component order. “hclust” for hierarchical clustering order, and “hclust.method” for the agglomeration method to be used. “hclust.method” should be one of “ward”, “single”, “complete”, “average”, “mcquitty”, “median” or “centroid”. “alphabet” for alphabetical order. “AOE”, “FPC”, “hclust”, “alphabet”. More algorithms can be found in seriation package.\n\ncorrplot.mixed(wine.cor, \n               lower = \"ellipse\", \n               upper = \"number\",\n               tl.pos = \"lt\",\n               diag = \"l\",\n               order=\"AOE\",\n               tl.col = \"black\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#reordering-a-correlation-matrix-using-hclust",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#reordering-a-correlation-matrix-using-hclust",
+    "title": "Hands-on Exercise 5",
+    "section": "Reordering a correlation matrix using hclust",
+    "text": "Reordering a correlation matrix using hclust\nIf using hclust, corrplot() can draw rectangles around the corrgram based on the results of hierarchical clustering.\n\ncorrplot(wine.cor, \n         method = \"ellipse\", \n         tl.pos = \"lt\",\n         tl.col = \"black\",\n         order=\"hclust\",\n         hclust.method = \"ward.D\",\n         addrect = 3)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#installing-and-launching-r-packages",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#installing-and-launching-r-packages",
+    "title": "Hands-on Exercise 5",
+    "section": "Installing and Launching R Packages",
+    "text": "Installing and Launching R Packages\nBefore you get started, you are required to open a new Quarto document. Keep the default html as the authoring format.\nNext, you will use the code chunk below to install and launch seriation, heatmaply, dendextend and tidyverse in RStudio.\n\npacman::p_load(seriation, dendextend, heatmaply, tidyverse)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-and-preparing-the-data-set-1",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-and-preparing-the-data-set-1",
+    "title": "Hands-on Exercise 5",
+    "section": "Importing and Preparing The Data Set",
+    "text": "Importing and Preparing The Data Set\nIn this hands-on exercise, the data of World Happines 2018 report will be used. The data set is downloaded from here. The original data set is in Microsoft Excel format. It has been extracted and saved in csv file called WHData-2018.csv."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-the-data-set",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-the-data-set",
+    "title": "Hands-on Exercise 5",
+    "section": "Importing the data set",
+    "text": "Importing the data set\nIn the code chunk below, read_csv() of readr is used to import WHData-2018.csv into R and parsed it into tibble R data frame format.\n\nwh &lt;- read_csv(\"data/WHData-2018.csv\")\n\nRows: 156 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr  (2): Country, Region\ndbl (10): Happiness score, Whisker-high, Whisker-low, Dystopia, GDP per capi...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#preparing-the-data-1",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#preparing-the-data-1",
+    "title": "Hands-on Exercise 5",
+    "section": "Preparing the data",
+    "text": "Preparing the data\nNext, we need to change the rows by country name instead of row number by using the code chunk below\n\nrow.names(wh) &lt;- wh$Country\n\nWarning: Setting row names on a tibble is deprecated."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#transforming-the-data-frame-into-a-matrix",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#transforming-the-data-frame-into-a-matrix",
+    "title": "Hands-on Exercise 5",
+    "section": "Transforming the data frame into a matrix",
+    "text": "Transforming the data frame into a matrix\nThe data was loaded into a data frame, but it has to be a data matrix to make your heatmap.\nThe code chunk below will be used to transform wh data frame into a data matrix.\n\nwh1 &lt;- dplyr::select(wh, c(3, 7:12))\nwh_matrix &lt;- data.matrix(wh)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#heatmap-of-r-stats",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#heatmap-of-r-stats",
+    "title": "Hands-on Exercise 5",
+    "section": "heatmap() of R Stats",
+    "text": "heatmap() of R Stats\nIn this sub-section, we will plot a heatmap by using heatmap() of Base Stats. The code chunk is given below.\n\nwh_heatmap &lt;- heatmap(wh_matrix,\n                      Rowv=NA, Colv=NA)\n\n\n\n\n\n\n\n\nNote:\nBy default, heatmap() plots a cluster heatmap. The arguments Rowv=NA and Colv=NA are used to switch off the option of plotting the row and column dendrograms. To plot a cluster heatmap, we just have to use the default as shown in the code chunk below.\n\nwh_heatmap &lt;- heatmap(wh_matrix)\n\n\n\n\n\n\n\n\nNote:\nThe order of both rows and columns is different compare to the native wh_matrix. This is because heatmap do a reordering using clusterisation: it calculates the distance between each pair of rows and columns and try to order them by similarity. Moreover, the corresponding dendrogram are provided beside the heatmap. Here, red cells denotes small values, and red small ones. This heatmap is not really informative. Indeed, the Happiness Score variable have relatively higher values, what makes that the other variables with small values all look the same. Thus, we need to normalize this matrix. This is done using the scale argument. It can be applied to rows or to columns following your needs.\n\nwh_heatmap &lt;- heatmap(wh_matrix,\n                      scale=\"column\",\n                      cexRow = 0.6, \n                      cexCol = 0.8,\n                      margins = c(10, 4))\n\n\n\n\n\n\n\n\nNotice that the values are scaled now. Also note that margins argument is used to ensure that the entire x-axis labels are displayed completely and, cexRow and cexCol arguments are used to define the font size used for y-axis and x-axis labels respectively."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-heatmaply",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-heatmaply",
+    "title": "Hands-on Exercise 5",
+    "section": "Working with heatmaply",
+    "text": "Working with heatmaply\n\nheatmaply(mtcars)\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\nℹ The deprecated feature was likely used in the dendextend package.\n  Please report the issue at &lt;https://github.com/talgalili/dendextend/issues&gt;.\n\n\n\n\n\n\nThe code chunk below shows the basic syntax needed to create n interactive heatmap by using heatmaply package.\n\nheatmaply(wh_matrix[, -c(1, 2, 4, 5)])\n\n\n\n\n\nNote that:\nDifferent from heatmap(), for heatmaply() the default horizontal dendrogram is placed on the left hand side of the heatmap. The text label of each raw, on the other hand, is placed on the right hand side of the heat map. When the x-axis marker labels are too long, they will be rotated by 135 degree from the north."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#data-trasformation",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#data-trasformation",
+    "title": "Hands-on Exercise 5",
+    "section": "Data trasformation",
+    "text": "Data trasformation\nWhen analysing multivariate data set, it is very common that the variables in the data sets includes values that reflect different types of measurement. In general, these variables’ values have their own range. In order to ensure that all the variables have comparable values, data transformation are commonly used before clustering.\nThree main data transformation methods are supported by heatmaply(), namely: scale, normalise and percentilse."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#scaling-method",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#scaling-method",
+    "title": "Hands-on Exercise 5",
+    "section": "Scaling method",
+    "text": "Scaling method\nWhen all variables are came from or assumed to come from some normal distribution, then scaling (i.e.: subtract the mean and divide by the standard deviation) would bring them all close to the standard normal distribution. In such a case, each value would reflect the distance from the mean in units of standard deviation. The scale argument in heatmaply() supports column and row scaling. The code chunk below is used to scale variable values columewise.\n\nheatmaply(wh_matrix[, -c(1, 2, 4, 5)],\n          scale = \"column\")\n\n\n\n\n\nNormalising method When variables in the data comes from possibly different (and non-normal) distributions, the normalize function can be used to bring data to the 0 to 1 scale by subtracting the minimum and dividing by the maximum of all observations. This preserves the shape of each variable’s distribution while making them easily comparable on the same “scale”. Different from Scaling, the normalise method is performed on the input data set i.e. wh_matrix as shown in the code chunk below.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]))\n\n\n\n\n\nPercentising method This is similar to ranking the variables, but instead of keeping the rank values, divide them by the maximal rank. This is done by using the ecdf of the variables on their own values, bringing each value to its empirical percentile. The benefit of the percentize function is that each value has a relatively clear interpretation, it is the percent of observations that got that value or below it. Similar to Normalize method, the Percentize method is also performed on the input data set i.e. wh_matrix as shown in the code chunk below.\n\nheatmaply(percentize(wh_matrix[, -c(1, 2, 4, 5)]))"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#clustering-algorithm",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#clustering-algorithm",
+    "title": "Hands-on Exercise 5",
+    "section": "Clustering algorithm",
+    "text": "Clustering algorithm\nheatmaply supports a variety of hierarchical clustering algorithm. The main arguments provided are:\ndistfun: function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist. The options “pearson”, “spearman” and “kendall” can be used to use correlation-based clustering, which uses as.dist(1 - cor(t(x))) as the distance metric (using the specified correlation method). hclustfun: function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust. dist_method default is NULL, which results in “euclidean” to be used. It can accept alternative character strings indicating the method to be passed to distfun. By default distfun is “dist”” hence this can be one of “euclidean”, “maximum”, “manhattan”, “canberra”, “binary” or “minkowski”. hclust_method default is NULL, which results in “complete” method to be used. It can accept alternative character strings indicating the method to be passed to hclustfun. By default hclustfun is hclust hence this can be one of “ward.D”, “ward.D2”, “single”, “complete”, “average” (= UPGMA), “mcquitty” (= WPGMA), “median” (= WPGMC) or “centroid” (= UPGMC). In general, a clustering model can be calibrated either manually or statistically."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#manual-approach",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#manual-approach",
+    "title": "Hands-on Exercise 5",
+    "section": "Manual approach",
+    "text": "Manual approach\nIn the code chunk below, the heatmap is plotted by using hierachical clustering algorithm with “Euclidean distance” and “ward.D” method.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          dist_method = \"euclidean\",\n          hclust_method = \"ward.D\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#statistical-approach",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#statistical-approach",
+    "title": "Hands-on Exercise 5",
+    "section": "Statistical approach",
+    "text": "Statistical approach\nIn order to determine the best clustering method and number of cluster the dend_expend() and find_k() functions of dendextend package will be used.\nFirst, the dend_expend() will be used to determine the recommended clustering method to be used.\n\nwh_d &lt;- dist(normalize(wh_matrix[, -c(1, 2, 4, 5)]), method = \"euclidean\")\ndend_expend(wh_d)[[3]]\n\n  dist_methods hclust_methods     optim\n1      unknown         ward.D 0.6137851\n2      unknown        ward.D2 0.6289186\n3      unknown         single 0.4774362\n4      unknown       complete 0.6434009\n5      unknown        average 0.6701688\n6      unknown       mcquitty 0.5020102\n7      unknown         median 0.5901833\n8      unknown       centroid 0.6338734\n\n\nThe output table shows that “average” method should be used because it gave the high optimum value.\nNext, find_k() is used to determine the optimal number of cluster.\n\nwh_clust &lt;- hclust(wh_d, method = \"average\")\nnum_k &lt;- find_k(wh_clust)\nplot(num_k)\n\n\n\n\n\n\n\n\nFigure above shows that k=3 would be good.\nWith reference to the statistical analysis results, we can prepare the code chunk as shown below.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          dist_method = \"euclidean\",\n          hclust_method = \"average\",\n          k_row = 3)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#seriation",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#seriation",
+    "title": "Hands-on Exercise 5",
+    "section": "Seriation",
+    "text": "Seriation\nOne of the problems with hierarchical clustering is that it doesn’t actually place the rows in a definite order, it merely constrains the space of possible orderings. Take three items A, B and C. If you ignore reflections, there are three possible orderings: ABC, ACB, BAC. If clustering them gives you ((A+B)+C) as a tree, you know that C can’t end up between A and B, but it doesn’t tell you which way to flip the A+B cluster. It doesn’t tell you if the ABC ordering will lead to a clearer-looking heatmap than the BAC ordering.\nheatmaply uses the seriation package to find an optimal ordering of rows and columns. Optimal means to optimize the Hamiltonian path length that is restricted by the dendrogram structure. This, in other words, means to rotate the branches so that the sum of distances between each adjacent leaf (label) will be minimized. This is related to a restricted version of the travelling salesman problem.\nHere we meet our first seriation algorithm: Optimal Leaf Ordering (OLO). This algorithm starts with the output of an agglomerative clustering algorithm and produces a unique ordering, one that flips the various branches of the dendrogram around so as to minimize the sum of dissimilarities between adjacent leaves. Here is the result of applying Optimal Leaf Ordering to the same clustering result as the heatmap above.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"OLO\")\n\n\n\n\n\nThe default options is “OLO” (Optimal leaf ordering) which optimizes the above criterion (in O(n^4)). Another option is “GW” (Gruvaeus and Wainer) which aims for the same goal but uses a potentially faster heuristic.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"GW\")\n\nRegistered S3 method overwritten by 'gclus':\n  method         from     \n  reorder.hclust seriation\n\n\n\n\n\n\nThe option “mean” gives the output we would get by default from heatmap functions in other packages such as gplots::heatmap.2.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"mean\")\n\n\n\n\n\nThe option “none” gives us the dendrograms without any rotation that is based on the data matrix.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"none\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-colour-palettes",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-colour-palettes",
+    "title": "Hands-on Exercise 5",
+    "section": "Working with colour palettes",
+    "text": "Working with colour palettes\nThe default colour palette uses by heatmaply is viridis. heatmaply users, however, can use other colour palettes in order to improve the aestheticness and visual friendliness of the heatmap.\nIn the code chunk below, the Blues colour palette of rColorBrewer is used\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"none\",\n          colors = Blues)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#the-finishing-touch",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#the-finishing-touch",
+    "title": "Hands-on Exercise 5",
+    "section": "The finishing touch",
+    "text": "The finishing touch\nBeside providing a wide collection of arguments for meeting the statistical analysis needs, heatmaply also provides many plotting features to ensure cartographic quality heatmap can be produced.\nIn the code chunk below the following arguments are used:\nk_row is used to produce 5 groups. margins is used to change the top margin to 60 and row margin to 200. fontsizw_row and fontsize_col are used to change the font size for row and column labels to 4. main is used to write the main title of the plot. xlab and ylab are used to write the x-axis and y-axis labels respectively.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          Colv=NA,\n          seriate = \"none\",\n          colors = Blues,\n          k_row = 5,\n          margins = c(NA,200,60,NA),\n          fontsize_row = 4,\n          fontsize_col = 5,\n          main=\"World Happiness Score and Variables by Country, 2018 \\nDataTransformation using Normalise Method\",\n          xlab = \"World Happiness Indicators\",\n          ylab = \"World Countries\"\n          )"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#installing-and-launching-r-packages-1",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#installing-and-launching-r-packages-1",
+    "title": "Hands-on Exercise 5",
+    "section": "Installing and Launching R Packages",
+    "text": "Installing and Launching R Packages\nFor this exercise, the GGally, parallelPlot and tidyverse packages will be used.\nThe code chunks below are used to install and load the packages in R.\n\npacman::p_load(GGally, parallelPlot, tidyverse)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#data-preparation",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#data-preparation",
+    "title": "Hands-on Exercise 5",
+    "section": "Data Preparation",
+    "text": "Data Preparation\nIn this hands-on exercise, the World Happinees 2018 (http://worldhappiness.report/ed/2018/) data will be used. The data set is download at https://s3.amazonaws.com/happiness-report/2018/WHR2018Chapter2OnlineData.xls. The original data set is in Microsoft Excel format. It has been extracted and saved in csv file called WHData-2018.csv.\nIn the code chunk below, read_csv() of readr package is used to import WHData-2018.csv into R and save it into a tibble data frame object called wh.\n\nwh &lt;- read_csv(\"data/WHData-2018.csv\")\n\nRows: 156 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr  (2): Country, Region\ndbl (10): Happiness score, Whisker-high, Whisker-low, Dystopia, GDP per capi...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#plotting-a-simple-parallel-coordinates",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#plotting-a-simple-parallel-coordinates",
+    "title": "Hands-on Exercise 5",
+    "section": "Plotting a simple parallel coordinates",
+    "text": "Plotting a simple parallel coordinates\nCode chunk below shows a typical syntax used to plot a basic static parallel coordinates plot by using ggparcoord().\n\nggparcoord(data = wh, \n           columns = c(7:12))\n\n\n\n\n\n\n\n\nNotice that only two argument namely data and columns is used. Data argument is used to map the data object (i.e. wh) and columns is used to select the columns for preparing the parallel coordinates plot."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#plotting-a-parallel-coordinates-with-boxplot",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#plotting-a-parallel-coordinates-with-boxplot",
+    "title": "Hands-on Exercise 5",
+    "section": "Plotting a parallel coordinates with boxplot",
+    "text": "Plotting a parallel coordinates with boxplot\nThe basic parallel coordinates failed to reveal any meaning understanding of the World Happiness measures. In this section, you will learn how to makeover the plot by using a collection of arguments provided by ggparcoord().\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Parallel Coordinates Plot of World Happines Variables\")\n\nWarning: The following aesthetics were dropped during statistical transformation:\ncolour.\nℹ This can happen when ggplot fails to infer the correct grouping structure in\n  the data.\nℹ Did you forget to specify a `group` aesthetic or to convert a numerical\n  variable into a factor?\n\n\n\n\n\n\n\n\n\nThings to learn from the code chunk above.\ngroupColumn argument is used to group the observations (i.e. parallel lines) by using a single variable (i.e. Region) and colour the parallel coordinates lines by region name. scale argument is used to scale the variables in the parallel coordinate plot by using uniminmax method. The method univariately scale each variable so the minimum of the variable is zero and the maximum is one. alphaLines argument is used to reduce the intensity of the line colour to 0.2. The permissible value range is between 0 to 1. boxplot argument is used to turn on the boxplot by using logical TRUE. The default is FALSE. title argument is used to provide the parallel coordinates plot a title."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#parallel-coordinates-with-facet",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#parallel-coordinates-with-facet",
+    "title": "Hands-on Exercise 5",
+    "section": "Parallel coordinates with facet",
+    "text": "Parallel coordinates with facet\nSince ggparcoord() is developed by extending ggplot2 package, we can combination use some of the ggplot2 function when plotting a parallel coordinates plot.\nIn the code chunk below, facet_wrap() of ggplot2 is used to plot 10 small multiple parallel coordinates plots. Each plot represent one geographical region such as East Asia.\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Multiple Parallel Coordinates Plots of World Happines Variables by Region\") +\n  facet_wrap(~ Region)\n\n\n\n\n\n\n\n\nOne of the aesthetic defect of the current design is that some of the variable names overlap on x-axis."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#rotating-x-axis-text-label",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#rotating-x-axis-text-label",
+    "title": "Hands-on Exercise 5",
+    "section": "Rotating x-axis text label",
+    "text": "Rotating x-axis text label\nTo make the x-axis text label easy to read, let us rotate the labels by 30 degrees. We can rotate axis text labels using theme() function in ggplot2 as shown in the code chunk below\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Multiple Parallel Coordinates Plots of World Happines Variables by Region\") +\n  facet_wrap(~ Region) + \n  theme(axis.text.x = element_text(angle = 30))\n\n\n\n\n\n\n\n\nThing to learn from the code chunk above:\nTo rotate x-axis text labels, we use axis.text.x as argument to theme() function. And we specify element_text(angle = 30) to rotate the x-axis text by an angle 30 degree."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#adjusting-the-rotated-x-axis-text-label",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#adjusting-the-rotated-x-axis-text-label",
+    "title": "Hands-on Exercise 5",
+    "section": "Adjusting the rotated x-axis text label",
+    "text": "Adjusting the rotated x-axis text label\nRotating x-axis text labels to 30 degrees makes the label overlap with the plot and we can avoid this by adjusting the text location using hjust argument to theme’s text element with element_text(). We use axis.text.x as we want to change the look of x-axis text.\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Multiple Parallel Coordinates Plots of World Happines Variables by Region\") +\n  facet_wrap(~ Region) + \n  theme(axis.text.x = element_text(angle = 30, hjust=1))"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#plotting-interactive-parallel-coordinates-plot-parallelplot-methods",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#plotting-interactive-parallel-coordinates-plot-parallelplot-methods",
+    "title": "Hands-on Exercise 5",
+    "section": "Plotting Interactive Parallel Coordinates Plot: parallelPlot methods",
+    "text": "Plotting Interactive Parallel Coordinates Plot: parallelPlot methods\nparallelPlot is an R package specially designed to plot a parallel coordinates plot by using ‘htmlwidgets’ package and d3.js. In this section, you will learn how to use functions provided in parallelPlot package to build interactive parallel coordinates plot."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#the-basic-plot-1",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#the-basic-plot-1",
+    "title": "Hands-on Exercise 5",
+    "section": "The basic plot",
+    "text": "The basic plot\nThe code chunk below plot an interactive parallel coordinates plot by using parallelPlot().\n\nwh &lt;- wh %&gt;%\n  select(\"Happiness score\", c(7:12))\nparallelPlot(wh,\n             width = 320,\n             height = 250)\n\n\n\n\n\nNotice that some of the axis labels are too long. You will learn how to overcome this problem in the next step."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#rotate-axis-label",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#rotate-axis-label",
+    "title": "Hands-on Exercise 5",
+    "section": "Rotate axis label",
+    "text": "Rotate axis label\nIn the code chunk below, rotateTitle argument is used to avoid overlapping axis labels.\n\nparallelPlot(wh,\n             rotateTitle = TRUE)\n\n\n\n\n\nOne of the useful interactive feature of parallelPlot is we can click on a variable of interest, for example Happiness score, the monotonous blue colour (default) will change a blues with different intensity colour scheme will be used."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#changing-the-colour-scheme",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#changing-the-colour-scheme",
+    "title": "Hands-on Exercise 5",
+    "section": "Changing the colour scheme",
+    "text": "Changing the colour scheme\nWe can change the default blue colour scheme by using continousCS argument as shown in the code chunl below.\n\nparallelPlot(wh,\n             continuousCS = \"YlOrRd\",\n             rotateTitle = TRUE)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#parallel-coordinates-plot-with-histogram",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#parallel-coordinates-plot-with-histogram",
+    "title": "Hands-on Exercise 5",
+    "section": "Parallel coordinates plot with histogram",
+    "text": "Parallel coordinates plot with histogram\nIn the code chunk below, histoVisibility argument is used to plot histogram along the axis of each variables.\n\nhistoVisibility &lt;- rep(TRUE, ncol(wh))\nparallelPlot(wh,\n             rotateTitle = TRUE,\n             histoVisibility = histoVisibility)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#data-wrangling",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#data-wrangling",
+    "title": "Hands-on Exercise 5",
+    "section": "Data Wrangling",
+    "text": "Data Wrangling\nIn this exercise, REALIS2018.csv data will be used. This dataset provides information of private property transaction records in 2018. The dataset is extracted from REALIS portal (https://spring.ura.gov.sg/lad/ore/login/index.cfm) of Urban Redevelopment Authority (URA)."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-the-data-set-1",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#importing-the-data-set-1",
+    "title": "Hands-on Exercise 5",
+    "section": "Importing the data set",
+    "text": "Importing the data set\nIn the code chunk below, read_csv() of readr is used to import realis2018.csv into R and parsed it into tibble R data.frame format.\n\nrealis2018 &lt;- read_csv(\"data/realis2018.csv\")\n\nRows: 23205 Columns: 20\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (12): Project Name, Address, Type of Area, Nett Price($), Sale Date, Pro...\ndbl  (8): No. of Units, Area (sqm), Transacted Price ($), Unit Price ($ psm)...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThe output tibble data.frame is called realis2018."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#data-wrangling-and-manipulation",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#data-wrangling-and-manipulation",
+    "title": "Hands-on Exercise 5",
+    "section": "Data Wrangling and Manipulation",
+    "text": "Data Wrangling and Manipulation\nThe data.frame realis2018 is in trasaction record form, which is highly disaggregated and not appropriate to be used to plot a treemap. In this section, we will perform the following steps to manipulate and prepare a data.frtame that is appropriate for treemap visualisation:\ngroup transaction records by Project Name, Planning Region, Planning Area, Property Type and Type of Sale, and compute Total Unit Sold, Total Area, Median Unit Price and Median Transacted Price by applying appropriate summary statistics on No. of Units, Area (sqm), Unit Price ($ psm) and Transacted Price ($) respectively. Two key verbs of dplyr package, namely: group_by() and summarize() will be used to perform these steps.\ngroup_by() breaks down a data.frame into specified groups of rows. When you then apply the verbs above on the resulting object they’ll be automatically applied “by group”.\nGrouping affects the verbs as follows:\ngrouped select() is the same as ungrouped select(), except that grouping variables are always retained. grouped arrange() is the same as ungrouped; unless you set .by_group = TRUE, in which case it orders first by the grouping variables. mutate() and filter() are most useful in conjunction with window functions (like rank(), or min(x) == x). They are described in detail in vignette(“window-functions”). sample_n() and sample_frac() sample the specified number/fraction of rows in each group. summarise() computes the summary for each group. In our case, group_by() will used together with summarise() to derive the summarised data.frame."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#grouped-summaries-without-the-pipe",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#grouped-summaries-without-the-pipe",
+    "title": "Hands-on Exercise 5",
+    "section": "Grouped summaries without the Pipe",
+    "text": "Grouped summaries without the Pipe\nThe code chank below shows a typical two lines code approach to perform the steps.\n\nrealis2018_grouped &lt;- group_by(realis2018, `Project Name`,\n                               `Planning Region`, `Planning Area`, \n                               `Property Type`, `Type of Sale`)\nrealis2018_summarised &lt;- summarise(realis2018_grouped, \n                          `Total Unit Sold` = sum(`No. of Units`, na.rm = TRUE),\n                          `Total Area` = sum(`Area (sqm)`, na.rm = TRUE),\n                          `Median Unit Price ($ psm)` = median(`Unit Price ($ psm)`, na.rm = TRUE), \n                          `Median Transacted Price` = median(`Transacted Price ($)`, na.rm = TRUE))\n\n`summarise()` has grouped output by 'Project Name', 'Planning Region',\n'Planning Area', 'Property Type'. You can override using the `.groups`\nargument.\n\n\nThe code chunk above is not very efficient because we have to give each intermediate data.frame a name, even though we don’t have to care about it."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#grouped-summaries-with-the-pipe",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#grouped-summaries-with-the-pipe",
+    "title": "Hands-on Exercise 5",
+    "section": "Grouped summaries with the pipe",
+    "text": "Grouped summaries with the pipe\nThe code chunk below shows a more efficient way to tackle the same processes by using the pipe, %&gt;%:\n\nrealis2018_summarised &lt;- realis2018 %&gt;% \n  group_by(`Project Name`,`Planning Region`, \n           `Planning Area`, `Property Type`, \n           `Type of Sale`) %&gt;%\n  summarise(`Total Unit Sold` = sum(`No. of Units`, na.rm = TRUE), \n            `Total Area` = sum(`Area (sqm)`, na.rm = TRUE),\n            `Median Unit Price ($ psm)` = median(`Unit Price ($ psm)`, na.rm = TRUE),\n            `Median Transacted Price` = median(`Transacted Price ($)`, na.rm = TRUE))\n\n`summarise()` has grouped output by 'Project Name', 'Planning Region',\n'Planning Area', 'Property Type'. You can override using the `.groups`\nargument."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#designing-treemap-with-treemap-package",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#designing-treemap-with-treemap-package",
+    "title": "Hands-on Exercise 5",
+    "section": "Designing Treemap with treemap Package",
+    "text": "Designing Treemap with treemap Package\ntreemap package is a R package specially designed to offer great flexibility in drawing treemaps. The core function, namely: treemap() offers at least 43 arguments. In this section, we will only explore the major arguments for designing elegent and yet truthful treemaps."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#designing-a-static-treemap",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#designing-a-static-treemap",
+    "title": "Hands-on Exercise 5",
+    "section": "Designing a static treemap",
+    "text": "Designing a static treemap\nIn this section, treemap() of Treemap package is used to plot a treemap showing the distribution of median unit prices and total unit sold of resale condominium by geographic hierarchy in 2017.\nFirst, we will select records belongs to resale condominium property type from realis2018_selected data frame.\n\nrealis2018_selected &lt;- realis2018_summarised %&gt;%\n  filter(`Property Type` == \"Condominium\", `Type of Sale` == \"Resale\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#using-the-basic-arguments",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#using-the-basic-arguments",
+    "title": "Hands-on Exercise 5",
+    "section": "Using the basic arguments",
+    "text": "Using the basic arguments\nThe code chunk below designed a treemap by using three core arguments of treemap(), namely: index, vSize and vColor.\n\ntreemap(realis2018_selected,\n        index=c(\"Planning Region\", \"Planning Area\", \"Project Name\"),\n        vSize=\"Total Unit Sold\",\n        vColor=\"Median Unit Price ($ psm)\",\n        title=\"Resale Condominium by Planning Region and Area, 2017\",\n        title.legend = \"Median Unit Price (S$ per sq. m)\"\n        )\n\n\n\n\n\n\n\n\nThings to learn from the three arguments used:\nindex The index vector must consist of at least two column names or else no hierarchy treemap will be plotted. If multiple column names are provided, such as the code chunk above, the first name is the highest aggregation level, the second name the second highest aggregation level, and so on. vSize The column must not contain negative values. This is because it’s vaues will be used to map the sizes of the rectangles of the treemaps. Warning:\nThe treemap above was wrongly coloured. For a correctly designed treemap, the colours of the rectagles should be in different intensity showing, in our case, median unit prices.\nFor treemap(), vColor is used in combination with the argument type to determines the colours of the rectangles. Without defining type, like the code chunk above, treemap() assumes type = index, in our case, the hierarchy of planning areas."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-vcolor-and-type-arguments",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-vcolor-and-type-arguments",
+    "title": "Hands-on Exercise 5",
+    "section": "Working with vColor and type arguments",
+    "text": "Working with vColor and type arguments\nIn the code chunk below, type argument is define as value.\n\ntreemap(realis2018_selected,\n        index=c(\"Planning Region\", \"Planning Area\", \"Project Name\"),\n        vSize=\"Total Unit Sold\",\n        vColor=\"Median Unit Price ($ psm)\",\n        type = \"value\",\n        title=\"Resale Condominium by Planning Region and Area, 2017\",\n        title.legend = \"Median Unit Price (S$ per sq. m)\"\n        )\n\n\n\n\n\n\n\n\nThinking to learn from the conde chunk above.\nThe rectangles are coloured with different intensity of green, reflecting their respective median unit prices. The legend reveals that the values are binned into ten bins, i.e. 0-5000, 5000-10000, etc. with an equal interval of 5000."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#colours-in-treemap-package",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#colours-in-treemap-package",
+    "title": "Hands-on Exercise 5",
+    "section": "Colours in treemap package",
+    "text": "Colours in treemap package\nThere are two arguments that determine the mapping to color palettes: mapping and palette. The only difference between “value” and “manual” is the default value for mapping. The “value” treemap considers palette to be a diverging color palette (say ColorBrewer’s “RdYlBu”), and maps it in such a way that 0 corresponds to the middle color (typically white or yellow), -max(abs(values)) to the left-end color, and max(abs(values)), to the right-end color. The “manual” treemap simply maps min(values) to the left-end color, max(values) to the right-end color, and mean(range(values)) to the middle color."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#the-value-type-treemap",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#the-value-type-treemap",
+    "title": "Hands-on Exercise 5",
+    "section": "The “value” type treemap",
+    "text": "The “value” type treemap\nThe code chunk below shows a value type treemap.\n\ntreemap(realis2018_selected,\n        index=c(\"Planning Region\", \"Planning Area\", \"Project Name\"),\n        vSize=\"Total Unit Sold\",\n        vColor=\"Median Unit Price ($ psm)\",\n        type=\"value\",\n        palette=\"RdYlBu\", \n        title=\"Resale Condominium by Planning Region and Area, 2017\",\n        title.legend = \"Median Unit Price (S$ per sq. m)\"\n        )\n\n\n\n\n\n\n\n\nThing to learn from the code chunk above:\nalthough the colour palette used is RdYlBu but there are no red rectangles in the treemap above. This is because all the median unit prices are positive. The reason why we see only 5000 to 45000 in the legend is because the range argument is by default c(min(values, max(values)) with some pretty rounding."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#the-manual-type-treemap",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#the-manual-type-treemap",
+    "title": "Hands-on Exercise 5",
+    "section": "The “manual” type treemap",
+    "text": "The “manual” type treemap\nThe “manual” type does not interpret the values as the “value” type does. Instead, the value range is mapped linearly to the colour palette.\nThe code chunk below shows a manual type treemap.\n\ntreemap(realis2018_selected,\n        index=c(\"Planning Region\", \"Planning Area\", \"Project Name\"),\n        vSize=\"Total Unit Sold\",\n        vColor=\"Median Unit Price ($ psm)\",\n        type=\"manual\",\n        palette=\"RdYlBu\", \n        title=\"Resale Condominium by Planning Region and Area, 2017\",\n        title.legend = \"Median Unit Price (S$ per sq. m)\"\n        )\n\n\n\n\n\n\n\n\nThings to learn from the code chunk above:\nThe colour scheme used is very copnfusing. This is because mapping = (min(values), mean(range(values)), max(values)). It is not wise to use diverging colour palette such as RdYlBu if the values are all positive or negative To overcome this problem, a single colour palette such as Blues should be used.\n\ntreemap(realis2018_selected,\n        index=c(\"Planning Region\", \"Planning Area\", \"Project Name\"),\n        vSize=\"Total Unit Sold\",\n        vColor=\"Median Unit Price ($ psm)\",\n        type=\"manual\",\n        palette=\"Blues\", \n        title=\"Resale Condominium by Planning Region and Area, 2017\",\n        title.legend = \"Median Unit Price (S$ per sq. m)\"\n        )"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#treemap-layout",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#treemap-layout",
+    "title": "Hands-on Exercise 5",
+    "section": "Treemap Layout",
+    "text": "Treemap Layout\ntreemap() supports two popular treemap layouts, namely: “squarified” and “pivotSize”. The default is “pivotSize”.\nThe squarified treemap algorithm (Bruls et al., 2000) produces good aspect ratios, but ignores the sorting order of the rectangles (sortID). The ordered treemap, pivot-by-size, algorithm (Bederson et al., 2002) takes the sorting order (sortID) into account while aspect ratios are still acceptable."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-algorithm-argument",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#working-with-algorithm-argument",
+    "title": "Hands-on Exercise 5",
+    "section": "Working with algorithm argument",
+    "text": "Working with algorithm argument\nThe code chunk below plots a squarified treemap by changing the algorithm argument.\n\ntreemap(realis2018_selected,\n        index=c(\"Planning Region\", \"Planning Area\", \"Project Name\"),\n        vSize=\"Total Unit Sold\",\n        vColor=\"Median Unit Price ($ psm)\",\n        type=\"manual\",\n        palette=\"Blues\", \n        algorithm = \"squarified\",\n        title=\"Resale Condominium by Planning Region and Area, 2017\",\n        title.legend = \"Median Unit Price (S$ per sq. m)\"\n        )"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#using-sortid",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#using-sortid",
+    "title": "Hands-on Exercise 5",
+    "section": "Using sortID",
+    "text": "Using sortID\nWhen “pivotSize” algorithm is used, sortID argument can be used to dertemine the order in which the rectangles are placed from top left to bottom right.\n\ntreemap(realis2018_selected,\n        index=c(\"Planning Region\", \"Planning Area\", \"Project Name\"),\n        vSize=\"Total Unit Sold\",\n        vColor=\"Median Unit Price ($ psm)\",\n        type=\"manual\",\n        palette=\"Blues\", \n        algorithm = \"pivotSize\",\n        sortID = \"Median Transacted Price\",\n        title=\"Resale Condominium by Planning Region and Area, 2017\",\n        title.legend = \"Median Unit Price (S$ per sq. m)\"\n        )"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#designing-treemap-using-treemapify-package",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#designing-treemap-using-treemapify-package",
+    "title": "Hands-on Exercise 5",
+    "section": "Designing Treemap using treemapify Package",
+    "text": "Designing Treemap using treemapify Package\ntreemapify is a R package specially developed to draw treemaps in ggplot2. In this section, you will learn how to designing treemps closely resemble treemaps designing in previous section by using treemapify. Before you getting started, you should read Introduction to “treemapify” its user guide."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#designing-a-basic-treemap",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#designing-a-basic-treemap",
+    "title": "Hands-on Exercise 5",
+    "section": "Designing a basic treemap",
+    "text": "Designing a basic treemap\n\nggplot(data=realis2018_selected, \n       aes(area = `Total Unit Sold`,\n           fill = `Median Unit Price ($ psm)`),\n       layout = \"scol\",\n       start = \"bottomleft\") + \n  geom_treemap() +\n  scale_fill_gradient(low = \"light blue\", high = \"blue\")\n\nWarning in fortify(data, ...): Arguments in `...` must be used.\n✖ Problematic arguments:\n• layout = \"scol\"\n• start = \"bottomleft\"\nℹ Did you misspell an argument name?"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#defining-hierarchy",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#defining-hierarchy",
+    "title": "Hands-on Exercise 5",
+    "section": "Defining hierarchy",
+    "text": "Defining hierarchy\nGroup by Planning Region\n\nggplot(data=realis2018_selected, \n       aes(area = `Total Unit Sold`,\n           fill = `Median Unit Price ($ psm)`,\n           subgroup = `Planning Region`),\n       start = \"topleft\") + \n  geom_treemap()\n\nWarning in fortify(data, ...): Arguments in `...` must be used.\n✖ Problematic argument:\n• start = \"topleft\"\nℹ Did you misspell an argument name?\n\n\n\n\n\n\n\n\n\nGroup by Planning Area\n\nggplot(data=realis2018_selected, \n       aes(area = `Total Unit Sold`,\n           fill = `Median Unit Price ($ psm)`,\n           subgroup = `Planning Region`,\n           subgroup2 = `Planning Area`)) + \n  geom_treemap()\n\n\n\n\n\n\n\n\nAdding boundary line\n\nggplot(data=realis2018_selected, \n       aes(area = `Total Unit Sold`,\n           fill = `Median Unit Price ($ psm)`,\n           subgroup = `Planning Region`,\n           subgroup2 = `Planning Area`)) + \n  geom_treemap() +\n  geom_treemap_subgroup2_border(colour = \"gray40\",\n                                size = 2) +\n  geom_treemap_subgroup_border(colour = \"gray20\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#installing-d3treer-package",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#installing-d3treer-package",
+    "title": "Hands-on Exercise 5",
+    "section": "Installing d3treeR package",
+    "text": "Installing d3treeR package\nThis slide shows you how to install a R package which is not available in cran.\nIf this is the first time you install a package from github, you should install devtools package by using the code below or else you can skip this step.\n\ninstall.packages(\"devtools\", repos = \"https://cloud.r-project.org\")\n\nNext, you will load the devtools library and install the package found in github by using the codes below.\n\nlibrary(devtools)\ndevtools::install_github(\"timelyportfolio/d3treeR\")\n\nNow you are ready to launch d3treeR package\n\nlibrary(d3treeR)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#designing-an-interactive-treemap",
+    "href": "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.knit.html#designing-an-interactive-treemap",
+    "title": "Hands-on Exercise 5",
+    "section": "Designing An Interactive Treemap",
+    "text": "Designing An Interactive Treemap\nThe codes below perform two processes.\ntreemap() is used to build a treemap by using selected variables in condominium data.frame. The treemap created is save as object called tm.\n\ntm &lt;- treemap(realis2018_summarised,\n        index=c(\"Planning Region\", \"Planning Area\"),\n        vSize=\"Total Unit Sold\",\n        vColor=\"Median Unit Price ($ psm)\",\n        type=\"value\",\n        title=\"Private Residential Property Sold, 2017\",\n        title.legend = \"Median Unit Price (S$ per sq. m)\"\n        )\n\n\n\n\n\n\n\n\nThen d3tree() is used to build an interactive treemap.\n\nd3tree(tm,rootname = \"Singapore\" )"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "In this hands-on exercise, the key R package use is tmap package in R. Beside tmap package, four other R packages will be used. They are:\nreadr for importing delimited text file, tidyr for tidying data, dplyr for wrangling data and sf for handling geospatial data. Among the four packages, readr, tidyr and dplyr are part of tidyverse package.\nThe code chunk below will be used to install and load these packages in RStudio.\n\npacman::p_load(sf, tmap, tidyverse)\n\n\n\n\nThe code chunk below uses the st_read() function of sf package to import MP14_SUBZONE_WEB_PL shapefile into R as a simple feature data frame called mpsz.\n\nmpsz &lt;- st_read(dsn = \"data/geospatial\", \n                layer = \"MP14_SUBZONE_WEB_PL\")\n\nReading layer `MP14_SUBZONE_WEB_PL' from data source \n  `D:\\Bai-Haotian\\ISSS608-Bai-Haotian\\Hands-on_Ex\\Hands-on_Ex08\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\n\n\nYou can examine the content of mpsz by using the code chunk below.\n\nmpsz\n\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\nFirst 10 features:\n   OBJECTID SUBZONE_NO       SUBZONE_N SUBZONE_C CA_IND      PLN_AREA_N\n1         1          1    MARINA SOUTH    MSSZ01      Y    MARINA SOUTH\n2         2          1    PEARL'S HILL    OTSZ01      Y          OUTRAM\n3         3          3       BOAT QUAY    SRSZ03      Y SINGAPORE RIVER\n4         4          8  HENDERSON HILL    BMSZ08      N     BUKIT MERAH\n5         5          3         REDHILL    BMSZ03      N     BUKIT MERAH\n6         6          7  ALEXANDRA HILL    BMSZ07      N     BUKIT MERAH\n7         7          9   BUKIT HO SWEE    BMSZ09      N     BUKIT MERAH\n8         8          2     CLARKE QUAY    SRSZ02      Y SINGAPORE RIVER\n9         9         13 PASIR PANJANG 1    QTSZ13      N      QUEENSTOWN\n10       10          7       QUEENSWAY    QTSZ07      N      QUEENSTOWN\n   PLN_AREA_C       REGION_N REGION_C          INC_CRC FMEL_UPD_D   X_ADDR\n1          MS CENTRAL REGION       CR 5ED7EB253F99252E 2014-12-05 31595.84\n2          OT CENTRAL REGION       CR 8C7149B9EB32EEFC 2014-12-05 28679.06\n3          SR CENTRAL REGION       CR C35FEFF02B13E0E5 2014-12-05 29654.96\n4          BM CENTRAL REGION       CR 3775D82C5DDBEFBD 2014-12-05 26782.83\n5          BM CENTRAL REGION       CR 85D9ABEF0A40678F 2014-12-05 26201.96\n6          BM CENTRAL REGION       CR 9D286521EF5E3B59 2014-12-05 25358.82\n7          BM CENTRAL REGION       CR 7839A8577144EFE2 2014-12-05 27680.06\n8          SR CENTRAL REGION       CR 48661DC0FBA09F7A 2014-12-05 29253.21\n9          QT CENTRAL REGION       CR 1F721290C421BFAB 2014-12-05 22077.34\n10         QT CENTRAL REGION       CR 3580D2AFFBEE914C 2014-12-05 24168.31\n     Y_ADDR SHAPE_Leng SHAPE_Area                       geometry\n1  29220.19   5267.381  1630379.3 MULTIPOLYGON (((31495.56 30...\n2  29782.05   3506.107   559816.2 MULTIPOLYGON (((29092.28 30...\n3  29974.66   1740.926   160807.5 MULTIPOLYGON (((29932.33 29...\n4  29933.77   3313.625   595428.9 MULTIPOLYGON (((27131.28 30...\n5  30005.70   2825.594   387429.4 MULTIPOLYGON (((26451.03 30...\n6  29991.38   4428.913  1030378.8 MULTIPOLYGON (((25899.7 297...\n7  30230.86   3275.312   551732.0 MULTIPOLYGON (((27746.95 30...\n8  30222.86   2208.619   290184.7 MULTIPOLYGON (((29351.26 29...\n9  29893.78   6571.323  1084792.3 MULTIPOLYGON (((20996.49 30...\n10 30104.18   3454.239   631644.3 MULTIPOLYGON (((24472.11 29...\n\n\n\n\n\nNext, we will import respopagsex2011to2020.csv file into RStudio and save the file into an R dataframe called popagsex.\nThe task will be performed by using read_csv() function of readr package as shown in the code chunk below.\n\npopdata &lt;- read_csv(\"data/aspatial/respopagesextod2011to2020.csv\")\n\nRows: 984656 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (5): PA, SZ, AG, Sex, TOD\ndbl (2): Pop, Time\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\n\n\n\nBefore a thematic map can be prepared, you are required to prepare a data table with year 2020 values. The data table should include the variables PA, SZ, YOUNG, ECONOMY ACTIVE, AGED, TOTAL, DEPENDENCY.\nYOUNG: age group 0 to 4 until age groyup 20 to 24, ECONOMY ACTIVE: age group 25-29 until age group 60-64, AGED: age group 65 and above, TOTAL: all age group, and DEPENDENCY: the ratio between young and aged against economy active group\n\npopdata2020 &lt;- popdata %&gt;%\n  filter(Time == 2020) %&gt;%\n  group_by(PA, SZ, AG) %&gt;%\n  summarise(`POP` = sum(`Pop`)) %&gt;%\n  ungroup() %&gt;%\n  pivot_wider(names_from=AG, \n              values_from=POP) %&gt;%\n  mutate(YOUNG = rowSums(.[3:6])\n         +rowSums(.[12])) %&gt;%\nmutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+\nrowSums(.[13:15]))%&gt;%\nmutate(`AGED`=rowSums(.[16:21])) %&gt;%\nmutate(`TOTAL`=rowSums(.[3:21])) %&gt;%  \nmutate(`DEPENDENCY` = (`YOUNG` + `AGED`)\n/`ECONOMY ACTIVE`) %&gt;%\n  select(`PA`, `SZ`, `YOUNG`, \n       `ECONOMY ACTIVE`, `AGED`, \n       `TOTAL`, `DEPENDENCY`)\n\n`summarise()` has grouped output by 'PA', 'SZ'. You can override using the\n`.groups` argument.\n\n\n\n\n\nBefore we can perform the georelational join, one extra step is required to convert the values in PA and SZ fields to uppercase. This is because the values of PA and SZ fields are made up of upper- and lowercase. On the other, hand the SUBZONE_N and PLN_AREA_N are in uppercase.\n\npopdata2020 &lt;- popdata2020 %&gt;%\n  mutate(across(c(PA, SZ), toupper)) %&gt;%\n  filter(`ECONOMY ACTIVE` &gt; 0)\n\nNext, left_join() of dplyr is used to join the geographical data and attribute table using planning subzone name e.g. SUBZONE_N and SZ as the common identifier.\n\nmpsz_pop2020 &lt;- left_join(mpsz, popdata2020,\n                          by = c(\"SUBZONE_N\" = \"SZ\"))\n\nThing to learn from the code chunk above:\nleft_join() of dplyr package is used with mpsz simple feature data frame as the left data table is to ensure that the output will be a simple features data frame.\n\nwrite_rds(mpsz_pop2020, \"data/rds/mpszpop2020.rds\")\n\n\n\n\nThe easiest and quickest to draw a choropleth map using tmap is using qtm(). It is concise and provides a good default visualisation in many cases.\nThe code chunk below will draw a cartographic standard choropleth map as shown below.\n\ntmap_mode(\"plot\")\n\nℹ tmap modes \"plot\" - \"view\"\nℹ toggle with `tmap::ttm()`\n\nqtm(mpsz_pop2020, \n    fill = \"DEPENDENCY\")\n\n\n\n\n\n\n\n\nThings to learn from the code chunk above:\ntmap_mode() with “plot” option is used to produce a static map. For interactive mode, “view” option should be used. fill argument is used to map the attribute (i.e. DEPENDENCY)\n\n\n\nDespite its usefulness of drawing a choropleth map quickly and easily, the disadvantge of qtm() is that it makes aesthetics of individual layers harder to control. To draw a high quality cartographic choropleth map as shown in the figure below, tmap’s drawing elements should be used.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(fill = \"DEPENDENCY\", \n              fill.scale = tm_scale_intervals(\n                style = \"quantile\",\n                n = 5,\n                values = \"brewer.blues\"),\n              fill.legend = tm_legend(\n                title = \"Dependency ratio\")) +\n  tm_title(\"Distribution of Dependency Ratio by planning subzone\") +\n  tm_layout(frame = TRUE) +\n  tm_borders(fill_alpha = 0.5) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_grid(alpha =0.2) +\n  tm_credits(\"Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\\n and Population data from Department of Statistics DOS\", \n             position = c(\"left\", \"bottom\"))\n\n[plot mode] fit legend/component: Some legend items or map compoments do not\nfit well, and are therefore rescaled.\nℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.\n\n\n\n\n\n\n\n\n\nIn the following sub-section, we will share with you tmap functions that used to plot these elements.\n\n\n\nThe basic building block of tmap is tm_shape() followed by one or more layer elemments such as tm_fill() and tm_polygons().\nIn the code chunk below, tm_shape() is used to define the input data (i.e mpsz_pop2020) and tm_polygons() is used to draw the planning subzone polygons\n\ntm_shape(mpsz_pop2020) +\n  tm_polygons()\n\n\n\n\n\n\n\n\n\n\n\nTo draw a choropleth map showing the geographical distribution of a selected variable by planning subzone, we just need to assign the target variable such as Dependency to tm_polygons().\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\")\n\n\n\n\n\n\n\n\nThings to learn from tm_polygons():\nThe default interval binning used to draw the choropleth map is called “pretty”. A detailed discussion of the data classification methods supported by tmap will be provided in sub-section 4.3. The default colour scheme used is YlOrRd of ColorBrewer. You will learn more about the color scheme in sub-section 4.4. By default, Missing value will be shaded in grey.\n\n\n\nActually, tm_polygons() is a wraper of tm_fill() and tm_border(). tm_fill() shades the polygons by using the default colour scheme and tm_borders() adds the borders of the shapefile onto the choropleth map.\nThe code chunk below draws a choropleth map by using tm_fill() alone.\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(\"DEPENDENCY\")\n\n\n\n\n\n\n\n\nNotice that the planning subzones are shared according to the respective dependecy values\nTo add the boundary of the planning subzones, tm_borders will be used as shown in the code chunk below.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(fill = \"DEPENDENCY\") +\n  tm_borders(lwd = 0.01,  \n             fill_alpha = 0.1)\n\n\n\n\n\n\n\n\nNotice that light-gray border lines have been added on the choropleth map.\nThe alpha argument is used to define transparency number between 0 (totally transparent) and 1 (not transparent). By default, the alpha value of the col is used (normally 1).\nBeside alpha argument, there are three other arguments for tm_borders(), they are:\ncol = border colour, lwd = border line width. The default is 1, and lty = border line type. The default is “solid”.\n\n\n\nThe code chunk below shows a quantile data classification that used 5 classes.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n      fill.scale = tm_scale_intervals(\n        style = \"jenks\",\n        n = 5)) +\n  tm_borders(fill_alpha = 0.5)\n\n\n\n\n\n\n\n\nIn the code chunk below, equal data classification method is used.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n      fill.scale = tm_scale_intervals(\n        style = \"equal\",\n        n = 5)) +\n  tm_borders(fill_alpha = 0.5)\n\n\n\n\n\n\n\n\nNotice that the distribution of quantile data classification method are more evenly distributed then equal data classification method.\n\n\n\nFor all the built-in styles, the category breaks are computed internally. In order to override these defaults, the breakpoints can be set explicitly by means of the breaks argument to the tm_fill(). It is important to note that, in tmap the breaks include a minimum and maximum. As a result, in order to end up with n categories, n+1 elements must be specified in the breaks option (the values must be in increasing order).\nBefore we get started, it is always a good practice to get some descriptive statistics on the variable before setting the break points. Code chunk below will be used to compute and display the descriptive statistics of DEPENDENCY field.\n\nsummary(mpsz_pop2020$DEPENDENCY)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's \n 0.1111  0.7147  0.7867  0.8585  0.8763 19.0000      92 \n\n\nNow, we will plot the choropleth map by using the code chunk below.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n          breaks = c(0, 0.60, 0.70, 0.80, 0.90, 1.00)) +\n  tm_borders(fill_alpha = 0.5)\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_tm_polygons()`: migrate the argument(s) related to the scale of\nthe visual variable `fill` namely 'breaks' to fill.scale = tm_scale(&lt;HERE&gt;).\n\n\nWarning: Values have found that are higher than the highest break. They are\nassigned to the highest interval\n\n\n\n\n\n\n\n\n\n\n\n\nTo change the colour, we assign the preferred colour to values argument of tm_scale_intervals() as shown in the code chunk below.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n      fill.scale = tm_scale_intervals(\n        style = \"quantile\",\n        n = 5,\n        values = \"brewer.greens\")) +\n  tm_borders(fill_alpha = 0.5)\n\n\n\n\n\n\n\n\nNotice that the choropleth map is shaded in green.\nTo reverse the colour shading, add a “-” prefix.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n      fill.scale = tm_scale_intervals(\n        style = \"quantile\",\n        n = 5,\n        values = \"-brewer.greens\")) +\n  tm_borders(fill_alpha = 0.5)\n\n\n\n\n\n\n\n\n\n\n\nIn tmap, several tm_legend() options are provided to change the placement, format and appearance of the legend.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n      fill.scale = tm_scale_intervals(\n        style = \"jenks\",\n        n = 5,\n        values = \"brewer.greens\"),\n      fill.legend = tm_legend(\n        title = \"Dependency ratio\")) +\n  tm_borders(fill_alpha = 0.5) +\n  tm_title(\"Distribution of Dependency Ratio by planning subzone \\n(Jenks classification)\")\n\n\n\n\n\n\n\n\n\n\n\ntmap allows a wide variety of layout settings to be changed. They can be called by using tmap_style().\nThe code chunk below shows the classic style is used.\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(\"DEPENDENCY\", \n          style = \"quantile\", \n          palette = \"-Greens\") +\n  tm_borders(alpha = 0.5) +\n  tmap_style(\"classic\")\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_fill()`: instead of `style = \"quantile\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_borders()`: use 'fill' for the fill color of polygons/symbols\n(instead of 'col'), and 'col' for the outlines (instead of 'border.col').\n[v3-&gt;v4] `tm_borders()`: use `fill_alpha` instead of `alpha`.\nstyle set to \"classic\"\n\nother available styles are: \"white\" (tmap default), \"gray\", \"natural\", \"cobalt\", \"albatross\", \"beaver\", \"bw\", \"watercolor\"\n\ntmap v3 styles: \"v3\" (tmap v3 default), \"gray_v3\", \"natural_v3\", \"cobalt_v3\", \"albatross_v3\", \"beaver_v3\", \"bw_v3\", \"classic_v3\", \"watercolor_v3\"\n\nMultiple palettes called \"greens\" found: \"brewer.greens\", \"matplotlib.greens\". The first one, \"brewer.greens\", is returned.\n\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"-Greens\" is named\n\"greens\" (in long format \"brewer.greens\")\n\n\n\n\n\n\n\n\n\n\n\n\nBeside map style, tmap also also provides arguments to draw other map furniture such as compass, scale bar and grid lines.\nIn the code chunk below, tm_compass(), tm_scale_bar() and tm_grid() are used to add compass, scale bar and grid lines onto the choropleth map.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(fill = \"DEPENDENCY\", \n              fill.scale = tm_scale_intervals(\n                style = \"quantile\",\n                n = 5,\n                values = \"brewer.blues\"),\n              fill.legend = tm_legend(\n                title = \"Dependency ratio\")) +\n  tm_title(\"Distribution of Dependency Ratio by planning subzone\") +\n  tm_layout(frame = TRUE) +\n  tm_borders(fill_alpha = 0.5) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_grid(alpha =0.2) +\n  tm_credits(\"Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\\n and Population data from Department of Statistics DOS\", \n             position = c(\"left\", \"bottom\"))\n\n\n\n\n\n\n\n\nTo reset the default style, refer to the code chunk below.\n\ntmap_style(\"white\")\n\nstyle set to \"white\" (tmap default)\n\n\nother available styles are: \"gray\", \"natural\", \"cobalt\", \"albatross\", \"beaver\", \"bw\", \"classic\", \"watercolor\"\n\n\ntmap v3 styles: \"v3\" (tmap v3 default), \"gray_v3\", \"natural_v3\", \"cobalt_v3\", \"albatross_v3\", \"beaver_v3\", \"bw_v3\", \"classic_v3\", \"watercolor_v3\"\n\n\n\n\n\nIn this example, small multiple choropleth maps are created by defining ncols in tm_fill()\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(c(\"YOUNG\", \"AGED\"),\n          style = \"equal\", \n          palette = \"Blues\") +\n  tm_layout(legend.position = c(\"right\", \"bottom\")) +\n  tm_borders(alpha = 0.5) +\n  tmap_style(\"white\")\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_fill()`: instead of `style = \"equal\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_borders()`: use `fill_alpha` instead of `alpha`.\nstyle set to \"white\" (tmap default)\n\nother available styles are: \"gray\", \"natural\", \"cobalt\", \"albatross\", \"beaver\", \"bw\", \"classic\", \"watercolor\"\n\ntmap v3 styles: \"v3\" (tmap v3 default), \"gray_v3\", \"natural_v3\", \"cobalt_v3\", \"albatross_v3\", \"beaver_v3\", \"bw_v3\", \"classic_v3\", \"watercolor_v3\"\n\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\n\n\n\n\n\n\n\n\nIn this example, small multiple choropleth maps are created by assigning multiple values to at least one of the aesthetic arguments\n\ntm_shape(mpsz_pop2020)+ \n  tm_polygons(c(\"DEPENDENCY\",\"AGED\"),\n          style = c(\"equal\", \"quantile\"), \n          palette = list(\"Blues\",\"Greens\")) +\n  tm_layout(legend.position = c(\"right\", \"bottom\"))\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_polygons()`: instead of `style = \"equal\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\nFor small multiples, specify a 'tm_scale_' for each multiple, and put them in a\nlist: 'fill'.scale = list(&lt;scale1&gt;, &lt;scale2&gt;, ...)'\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\n\n\n\n\n\n\n\n\n\n\n\nIn this example, multiple small choropleth maps are created by using tm_facets().\n\ntm_shape(mpsz_pop2020) +\n  tm_fill(\"DEPENDENCY\",\n          style = \"quantile\",\n          palette = \"Blues\",\n          thres.poly = 0) + \n  tm_facets(by=\"REGION_N\", \n            free.coords=TRUE) +\n  tm_layout(legend.show = FALSE,\n            title.position = c(\"center\", \"center\"), \n            title.size = 20) +\n  tm_borders(alpha = 0.5)\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_fill()`: instead of `style = \"quantile\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_borders()`: use `fill_alpha` instead of `alpha`.\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\n\n\n\n\n\n\n\n\n\n\n\nIn this example, multiple small choropleth maps are created by creating multiple stand-alone maps with tmap_arrange().\n\nyoungmap &lt;- tm_shape(mpsz_pop2020)+ \n  tm_polygons(\"YOUNG\", \n              style = \"quantile\", \n              palette = \"Blues\")\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_polygons()`: instead of `style = \"quantile\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\n\nagedmap &lt;- tm_shape(mpsz_pop2020)+ \n  tm_polygons(\"AGED\", \n              style = \"quantile\", \n              palette = \"Blues\")\n\ntmap_arrange(youngmap, agedmap, asp=1, ncol=2)\n\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\n\n\n\n\n\n\n\n\n\n\n\nInstead of creating small multiple choropleth map, you can also use selection funtion to map spatial objects meeting the selection criterion.\n\ntm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N==\"CENTRAL REGION\", ])+\n  tm_fill(\"DEPENDENCY\", \n          style = \"quantile\", \n          palette = \"Blues\", \n          legend.hist = TRUE, \n          legend.is.portrait = TRUE,\n          legend.hist.z = 0.1) +\n  tm_layout(legend.outside = TRUE,\n            legend.height = 0.45, \n            legend.width = 5.0,\n            legend.position = c(\"right\", \"bottom\"),\n            frame = FALSE) +\n  tm_borders(alpha = 0.5)\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_fill()`: instead of `style = \"quantile\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_fill()`: migrate the argument(s) related to the legend of the\nvisual variable `fill` namely 'legend.is.portrait' (rename to 'orientation') to\n'fill.legend = tm_legend(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_fill()`: use `fill.chart = tm_chart_histogram()` instead of\n`legend.hist = TRUE`.\n[v3-&gt;v4] `tm_borders()`: use `fill_alpha` instead of `alpha`.\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#install-and-launching-r-packages",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#install-and-launching-r-packages",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "In this hands-on exercise, the key R package use is tmap package in R. Beside tmap package, four other R packages will be used. They are:\nreadr for importing delimited text file, tidyr for tidying data, dplyr for wrangling data and sf for handling geospatial data. Among the four packages, readr, tidyr and dplyr are part of tidyverse package.\nThe code chunk below will be used to install and load these packages in RStudio.\n\npacman::p_load(sf, tmap, tidyverse)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#importing-the-data",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#importing-the-data",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "The code chunk below uses the st_read() function of sf package to import MP14_SUBZONE_WEB_PL shapefile into R as a simple feature data frame called mpsz.\n\nmpsz &lt;- st_read(dsn = \"data/geospatial\", \n                layer = \"MP14_SUBZONE_WEB_PL\")\n\nReading layer `MP14_SUBZONE_WEB_PL' from data source \n  `D:\\Bai-Haotian\\ISSS608-Bai-Haotian\\Hands-on_Ex\\Hands-on_Ex08\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\n\n\nYou can examine the content of mpsz by using the code chunk below.\n\nmpsz\n\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\nFirst 10 features:\n   OBJECTID SUBZONE_NO       SUBZONE_N SUBZONE_C CA_IND      PLN_AREA_N\n1         1          1    MARINA SOUTH    MSSZ01      Y    MARINA SOUTH\n2         2          1    PEARL'S HILL    OTSZ01      Y          OUTRAM\n3         3          3       BOAT QUAY    SRSZ03      Y SINGAPORE RIVER\n4         4          8  HENDERSON HILL    BMSZ08      N     BUKIT MERAH\n5         5          3         REDHILL    BMSZ03      N     BUKIT MERAH\n6         6          7  ALEXANDRA HILL    BMSZ07      N     BUKIT MERAH\n7         7          9   BUKIT HO SWEE    BMSZ09      N     BUKIT MERAH\n8         8          2     CLARKE QUAY    SRSZ02      Y SINGAPORE RIVER\n9         9         13 PASIR PANJANG 1    QTSZ13      N      QUEENSTOWN\n10       10          7       QUEENSWAY    QTSZ07      N      QUEENSTOWN\n   PLN_AREA_C       REGION_N REGION_C          INC_CRC FMEL_UPD_D   X_ADDR\n1          MS CENTRAL REGION       CR 5ED7EB253F99252E 2014-12-05 31595.84\n2          OT CENTRAL REGION       CR 8C7149B9EB32EEFC 2014-12-05 28679.06\n3          SR CENTRAL REGION       CR C35FEFF02B13E0E5 2014-12-05 29654.96\n4          BM CENTRAL REGION       CR 3775D82C5DDBEFBD 2014-12-05 26782.83\n5          BM CENTRAL REGION       CR 85D9ABEF0A40678F 2014-12-05 26201.96\n6          BM CENTRAL REGION       CR 9D286521EF5E3B59 2014-12-05 25358.82\n7          BM CENTRAL REGION       CR 7839A8577144EFE2 2014-12-05 27680.06\n8          SR CENTRAL REGION       CR 48661DC0FBA09F7A 2014-12-05 29253.21\n9          QT CENTRAL REGION       CR 1F721290C421BFAB 2014-12-05 22077.34\n10         QT CENTRAL REGION       CR 3580D2AFFBEE914C 2014-12-05 24168.31\n     Y_ADDR SHAPE_Leng SHAPE_Area                       geometry\n1  29220.19   5267.381  1630379.3 MULTIPOLYGON (((31495.56 30...\n2  29782.05   3506.107   559816.2 MULTIPOLYGON (((29092.28 30...\n3  29974.66   1740.926   160807.5 MULTIPOLYGON (((29932.33 29...\n4  29933.77   3313.625   595428.9 MULTIPOLYGON (((27131.28 30...\n5  30005.70   2825.594   387429.4 MULTIPOLYGON (((26451.03 30...\n6  29991.38   4428.913  1030378.8 MULTIPOLYGON (((25899.7 297...\n7  30230.86   3275.312   551732.0 MULTIPOLYGON (((27746.95 30...\n8  30222.86   2208.619   290184.7 MULTIPOLYGON (((29351.26 29...\n9  29893.78   6571.323  1084792.3 MULTIPOLYGON (((20996.49 30...\n10 30104.18   3454.239   631644.3 MULTIPOLYGON (((24472.11 29..."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#importing-attribute-data-into-r",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#importing-attribute-data-into-r",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "Next, we will import respopagsex2011to2020.csv file into RStudio and save the file into an R dataframe called popagsex.\nThe task will be performed by using read_csv() function of readr package as shown in the code chunk below.\n\npopdata &lt;- read_csv(\"data/aspatial/respopagesextod2011to2020.csv\")\n\nRows: 984656 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (5): PA, SZ, AG, Sex, TOD\ndbl (2): Pop, Time\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#data-preparation",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#data-preparation",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "Before a thematic map can be prepared, you are required to prepare a data table with year 2020 values. The data table should include the variables PA, SZ, YOUNG, ECONOMY ACTIVE, AGED, TOTAL, DEPENDENCY.\nYOUNG: age group 0 to 4 until age groyup 20 to 24, ECONOMY ACTIVE: age group 25-29 until age group 60-64, AGED: age group 65 and above, TOTAL: all age group, and DEPENDENCY: the ratio between young and aged against economy active group\n\npopdata2020 &lt;- popdata %&gt;%\n  filter(Time == 2020) %&gt;%\n  group_by(PA, SZ, AG) %&gt;%\n  summarise(`POP` = sum(`Pop`)) %&gt;%\n  ungroup() %&gt;%\n  pivot_wider(names_from=AG, \n              values_from=POP) %&gt;%\n  mutate(YOUNG = rowSums(.[3:6])\n         +rowSums(.[12])) %&gt;%\nmutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+\nrowSums(.[13:15]))%&gt;%\nmutate(`AGED`=rowSums(.[16:21])) %&gt;%\nmutate(`TOTAL`=rowSums(.[3:21])) %&gt;%  \nmutate(`DEPENDENCY` = (`YOUNG` + `AGED`)\n/`ECONOMY ACTIVE`) %&gt;%\n  select(`PA`, `SZ`, `YOUNG`, \n       `ECONOMY ACTIVE`, `AGED`, \n       `TOTAL`, `DEPENDENCY`)\n\n`summarise()` has grouped output by 'PA', 'SZ'. You can override using the\n`.groups` argument."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#joining-the-attribute-data-and-geospatial-data",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#joining-the-attribute-data-and-geospatial-data",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "Before we can perform the georelational join, one extra step is required to convert the values in PA and SZ fields to uppercase. This is because the values of PA and SZ fields are made up of upper- and lowercase. On the other, hand the SUBZONE_N and PLN_AREA_N are in uppercase.\n\npopdata2020 &lt;- popdata2020 %&gt;%\n  mutate(across(c(PA, SZ), toupper)) %&gt;%\n  filter(`ECONOMY ACTIVE` &gt; 0)\n\nNext, left_join() of dplyr is used to join the geographical data and attribute table using planning subzone name e.g. SUBZONE_N and SZ as the common identifier.\n\nmpsz_pop2020 &lt;- left_join(mpsz, popdata2020,\n                          by = c(\"SUBZONE_N\" = \"SZ\"))\n\nThing to learn from the code chunk above:\nleft_join() of dplyr package is used with mpsz simple feature data frame as the left data table is to ensure that the output will be a simple features data frame.\n\nwrite_rds(mpsz_pop2020, \"data/rds/mpszpop2020.rds\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#plotting-a-choropleth-map-quickly-by-using-qtm",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#plotting-a-choropleth-map-quickly-by-using-qtm",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "The easiest and quickest to draw a choropleth map using tmap is using qtm(). It is concise and provides a good default visualisation in many cases.\nThe code chunk below will draw a cartographic standard choropleth map as shown below.\n\ntmap_mode(\"plot\")\n\nℹ tmap modes \"plot\" - \"view\"\nℹ toggle with `tmap::ttm()`\n\nqtm(mpsz_pop2020, \n    fill = \"DEPENDENCY\")\n\n\n\n\n\n\n\n\nThings to learn from the code chunk above:\ntmap_mode() with “plot” option is used to produce a static map. For interactive mode, “view” option should be used. fill argument is used to map the attribute (i.e. DEPENDENCY)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#creating-a-choropleth-map-by-using-tmaps-elements",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#creating-a-choropleth-map-by-using-tmaps-elements",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "Despite its usefulness of drawing a choropleth map quickly and easily, the disadvantge of qtm() is that it makes aesthetics of individual layers harder to control. To draw a high quality cartographic choropleth map as shown in the figure below, tmap’s drawing elements should be used.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(fill = \"DEPENDENCY\", \n              fill.scale = tm_scale_intervals(\n                style = \"quantile\",\n                n = 5,\n                values = \"brewer.blues\"),\n              fill.legend = tm_legend(\n                title = \"Dependency ratio\")) +\n  tm_title(\"Distribution of Dependency Ratio by planning subzone\") +\n  tm_layout(frame = TRUE) +\n  tm_borders(fill_alpha = 0.5) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_grid(alpha =0.2) +\n  tm_credits(\"Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\\n and Population data from Department of Statistics DOS\", \n             position = c(\"left\", \"bottom\"))\n\n[plot mode] fit legend/component: Some legend items or map compoments do not\nfit well, and are therefore rescaled.\nℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.\n\n\n\n\n\n\n\n\n\nIn the following sub-section, we will share with you tmap functions that used to plot these elements."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#drawing-a-base-map",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#drawing-a-base-map",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "The basic building block of tmap is tm_shape() followed by one or more layer elemments such as tm_fill() and tm_polygons().\nIn the code chunk below, tm_shape() is used to define the input data (i.e mpsz_pop2020) and tm_polygons() is used to draw the planning subzone polygons\n\ntm_shape(mpsz_pop2020) +\n  tm_polygons()"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#drawing-a-choropleth-map-using-tm_polygons",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#drawing-a-choropleth-map-using-tm_polygons",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "To draw a choropleth map showing the geographical distribution of a selected variable by planning subzone, we just need to assign the target variable such as Dependency to tm_polygons().\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\")\n\n\n\n\n\n\n\n\nThings to learn from tm_polygons():\nThe default interval binning used to draw the choropleth map is called “pretty”. A detailed discussion of the data classification methods supported by tmap will be provided in sub-section 4.3. The default colour scheme used is YlOrRd of ColorBrewer. You will learn more about the color scheme in sub-section 4.4. By default, Missing value will be shaded in grey."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#drawing-a-choropleth-map-using-tm_fill-and-tm_border",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#drawing-a-choropleth-map-using-tm_fill-and-tm_border",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "Actually, tm_polygons() is a wraper of tm_fill() and tm_border(). tm_fill() shades the polygons by using the default colour scheme and tm_borders() adds the borders of the shapefile onto the choropleth map.\nThe code chunk below draws a choropleth map by using tm_fill() alone.\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(\"DEPENDENCY\")\n\n\n\n\n\n\n\n\nNotice that the planning subzones are shared according to the respective dependecy values\nTo add the boundary of the planning subzones, tm_borders will be used as shown in the code chunk below.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(fill = \"DEPENDENCY\") +\n  tm_borders(lwd = 0.01,  \n             fill_alpha = 0.1)\n\n\n\n\n\n\n\n\nNotice that light-gray border lines have been added on the choropleth map.\nThe alpha argument is used to define transparency number between 0 (totally transparent) and 1 (not transparent). By default, the alpha value of the col is used (normally 1).\nBeside alpha argument, there are three other arguments for tm_borders(), they are:\ncol = border colour, lwd = border line width. The default is 1, and lty = border line type. The default is “solid”."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#plotting-choropleth-maps-with-built-in-classification-methods",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#plotting-choropleth-maps-with-built-in-classification-methods",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "The code chunk below shows a quantile data classification that used 5 classes.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n      fill.scale = tm_scale_intervals(\n        style = \"jenks\",\n        n = 5)) +\n  tm_borders(fill_alpha = 0.5)\n\n\n\n\n\n\n\n\nIn the code chunk below, equal data classification method is used.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n      fill.scale = tm_scale_intervals(\n        style = \"equal\",\n        n = 5)) +\n  tm_borders(fill_alpha = 0.5)\n\n\n\n\n\n\n\n\nNotice that the distribution of quantile data classification method are more evenly distributed then equal data classification method."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#plotting-choropleth-map-with-custome-break",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#plotting-choropleth-map-with-custome-break",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "For all the built-in styles, the category breaks are computed internally. In order to override these defaults, the breakpoints can be set explicitly by means of the breaks argument to the tm_fill(). It is important to note that, in tmap the breaks include a minimum and maximum. As a result, in order to end up with n categories, n+1 elements must be specified in the breaks option (the values must be in increasing order).\nBefore we get started, it is always a good practice to get some descriptive statistics on the variable before setting the break points. Code chunk below will be used to compute and display the descriptive statistics of DEPENDENCY field.\n\nsummary(mpsz_pop2020$DEPENDENCY)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's \n 0.1111  0.7147  0.7867  0.8585  0.8763 19.0000      92 \n\n\nNow, we will plot the choropleth map by using the code chunk below.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n          breaks = c(0, 0.60, 0.70, 0.80, 0.90, 1.00)) +\n  tm_borders(fill_alpha = 0.5)\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_tm_polygons()`: migrate the argument(s) related to the scale of\nthe visual variable `fill` namely 'breaks' to fill.scale = tm_scale(&lt;HERE&gt;).\n\n\nWarning: Values have found that are higher than the highest break. They are\nassigned to the highest interval"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#using-colourbrewer-palette",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#using-colourbrewer-palette",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "To change the colour, we assign the preferred colour to values argument of tm_scale_intervals() as shown in the code chunk below.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n      fill.scale = tm_scale_intervals(\n        style = \"quantile\",\n        n = 5,\n        values = \"brewer.greens\")) +\n  tm_borders(fill_alpha = 0.5)\n\n\n\n\n\n\n\n\nNotice that the choropleth map is shaded in green.\nTo reverse the colour shading, add a “-” prefix.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n      fill.scale = tm_scale_intervals(\n        style = \"quantile\",\n        n = 5,\n        values = \"-brewer.greens\")) +\n  tm_borders(fill_alpha = 0.5)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#map-legend",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#map-legend",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "In tmap, several tm_legend() options are provided to change the placement, format and appearance of the legend.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(\"DEPENDENCY\",\n      fill.scale = tm_scale_intervals(\n        style = \"jenks\",\n        n = 5,\n        values = \"brewer.greens\"),\n      fill.legend = tm_legend(\n        title = \"Dependency ratio\")) +\n  tm_borders(fill_alpha = 0.5) +\n  tm_title(\"Distribution of Dependency Ratio by planning subzone \\n(Jenks classification)\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#map-style",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#map-style",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "tmap allows a wide variety of layout settings to be changed. They can be called by using tmap_style().\nThe code chunk below shows the classic style is used.\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(\"DEPENDENCY\", \n          style = \"quantile\", \n          palette = \"-Greens\") +\n  tm_borders(alpha = 0.5) +\n  tmap_style(\"classic\")\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_fill()`: instead of `style = \"quantile\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_borders()`: use 'fill' for the fill color of polygons/symbols\n(instead of 'col'), and 'col' for the outlines (instead of 'border.col').\n[v3-&gt;v4] `tm_borders()`: use `fill_alpha` instead of `alpha`.\nstyle set to \"classic\"\n\nother available styles are: \"white\" (tmap default), \"gray\", \"natural\", \"cobalt\", \"albatross\", \"beaver\", \"bw\", \"watercolor\"\n\ntmap v3 styles: \"v3\" (tmap v3 default), \"gray_v3\", \"natural_v3\", \"cobalt_v3\", \"albatross_v3\", \"beaver_v3\", \"bw_v3\", \"classic_v3\", \"watercolor_v3\"\n\nMultiple palettes called \"greens\" found: \"brewer.greens\", \"matplotlib.greens\". The first one, \"brewer.greens\", is returned.\n\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"-Greens\" is named\n\"greens\" (in long format \"brewer.greens\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#cartographic-furniture",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#cartographic-furniture",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "Beside map style, tmap also also provides arguments to draw other map furniture such as compass, scale bar and grid lines.\nIn the code chunk below, tm_compass(), tm_scale_bar() and tm_grid() are used to add compass, scale bar and grid lines onto the choropleth map.\n\ntm_shape(mpsz_pop2020)+\n  tm_polygons(fill = \"DEPENDENCY\", \n              fill.scale = tm_scale_intervals(\n                style = \"quantile\",\n                n = 5,\n                values = \"brewer.blues\"),\n              fill.legend = tm_legend(\n                title = \"Dependency ratio\")) +\n  tm_title(\"Distribution of Dependency Ratio by planning subzone\") +\n  tm_layout(frame = TRUE) +\n  tm_borders(fill_alpha = 0.5) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_grid(alpha =0.2) +\n  tm_credits(\"Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\\n and Population data from Department of Statistics DOS\", \n             position = c(\"left\", \"bottom\"))\n\n\n\n\n\n\n\n\nTo reset the default style, refer to the code chunk below.\n\ntmap_style(\"white\")\n\nstyle set to \"white\" (tmap default)\n\n\nother available styles are: \"gray\", \"natural\", \"cobalt\", \"albatross\", \"beaver\", \"bw\", \"classic\", \"watercolor\"\n\n\ntmap v3 styles: \"v3\" (tmap v3 default), \"gray_v3\", \"natural_v3\", \"cobalt_v3\", \"albatross_v3\", \"beaver_v3\", \"bw_v3\", \"classic_v3\", \"watercolor_v3\""
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#by-assigning-multiple-values-to-at-least-one-of-the-aesthetic-arguments",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#by-assigning-multiple-values-to-at-least-one-of-the-aesthetic-arguments",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "In this example, small multiple choropleth maps are created by defining ncols in tm_fill()\n\ntm_shape(mpsz_pop2020)+\n  tm_fill(c(\"YOUNG\", \"AGED\"),\n          style = \"equal\", \n          palette = \"Blues\") +\n  tm_layout(legend.position = c(\"right\", \"bottom\")) +\n  tm_borders(alpha = 0.5) +\n  tmap_style(\"white\")\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_fill()`: instead of `style = \"equal\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_borders()`: use `fill_alpha` instead of `alpha`.\nstyle set to \"white\" (tmap default)\n\nother available styles are: \"gray\", \"natural\", \"cobalt\", \"albatross\", \"beaver\", \"bw\", \"classic\", \"watercolor\"\n\ntmap v3 styles: \"v3\" (tmap v3 default), \"gray_v3\", \"natural_v3\", \"cobalt_v3\", \"albatross_v3\", \"beaver_v3\", \"bw_v3\", \"classic_v3\", \"watercolor_v3\"\n\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\n\n\n\n\n\n\n\n\nIn this example, small multiple choropleth maps are created by assigning multiple values to at least one of the aesthetic arguments\n\ntm_shape(mpsz_pop2020)+ \n  tm_polygons(c(\"DEPENDENCY\",\"AGED\"),\n          style = c(\"equal\", \"quantile\"), \n          palette = list(\"Blues\",\"Greens\")) +\n  tm_layout(legend.position = c(\"right\", \"bottom\"))\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_polygons()`: instead of `style = \"equal\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\nFor small multiples, specify a 'tm_scale_' for each multiple, and put them in a\nlist: 'fill'.scale = list(&lt;scale1&gt;, &lt;scale2&gt;, ...)'\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#by-defining-a-group-by-variable-in-tm_facets",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#by-defining-a-group-by-variable-in-tm_facets",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "In this example, multiple small choropleth maps are created by using tm_facets().\n\ntm_shape(mpsz_pop2020) +\n  tm_fill(\"DEPENDENCY\",\n          style = \"quantile\",\n          palette = \"Blues\",\n          thres.poly = 0) + \n  tm_facets(by=\"REGION_N\", \n            free.coords=TRUE) +\n  tm_layout(legend.show = FALSE,\n            title.position = c(\"center\", \"center\"), \n            title.size = 20) +\n  tm_borders(alpha = 0.5)\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_fill()`: instead of `style = \"quantile\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_borders()`: use `fill_alpha` instead of `alpha`.\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#by-creating-multiple-stand-alone-maps-with-tmap_arrange",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#by-creating-multiple-stand-alone-maps-with-tmap_arrange",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "In this example, multiple small choropleth maps are created by creating multiple stand-alone maps with tmap_arrange().\n\nyoungmap &lt;- tm_shape(mpsz_pop2020)+ \n  tm_polygons(\"YOUNG\", \n              style = \"quantile\", \n              palette = \"Blues\")\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_polygons()`: instead of `style = \"quantile\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\n\nagedmap &lt;- tm_shape(mpsz_pop2020)+ \n  tm_polygons(\"AGED\", \n              style = \"quantile\", \n              palette = \"Blues\")\n\ntmap_arrange(youngmap, agedmap, asp=1, ncol=2)\n\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#mappping-spatial-object-meeting-a-selection-criterion",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#mappping-spatial-object-meeting-a-selection-criterion",
+    "title": "Hands-on Exercise 8",
+    "section": "",
+    "text": "Instead of creating small multiple choropleth map, you can also use selection funtion to map spatial objects meeting the selection criterion.\n\ntm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N==\"CENTRAL REGION\", ])+\n  tm_fill(\"DEPENDENCY\", \n          style = \"quantile\", \n          palette = \"Blues\", \n          legend.hist = TRUE, \n          legend.is.portrait = TRUE,\n          legend.hist.z = 0.1) +\n  tm_layout(legend.outside = TRUE,\n            legend.height = 0.45, \n            legend.width = 5.0,\n            legend.position = c(\"right\", \"bottom\"),\n            frame = FALSE) +\n  tm_borders(alpha = 0.5)\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_fill()`: instead of `style = \"quantile\"`, use fill.scale =\n`tm_scale_intervals()`.\nℹ Migrate the argument(s) 'style', 'palette' (rename to 'values') to\n  'tm_scale_intervals(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_fill()`: migrate the argument(s) related to the legend of the\nvisual variable `fill` namely 'legend.is.portrait' (rename to 'orientation') to\n'fill.legend = tm_legend(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_fill()`: use `fill.chart = tm_chart_histogram()` instead of\n`legend.hist = TRUE`.\n[v3-&gt;v4] `tm_borders()`: use `fill_alpha` instead of `alpha`.\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#data-import-and-preparation",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#data-import-and-preparation",
+    "title": "Hands-on Exercise 8",
+    "section": "Data Import and Preparation",
+    "text": "Data Import and Preparation\nThe code chunk below uses read_csv() function of readr package to import SGPools_svy21.csv into R as a tibble data frame called sgpools.\n\nsgpools &lt;- read_csv(\"data/aspatial/SGPools_svy21.csv\")\n\nRows: 306 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (3): NAME, ADDRESS, OUTLET TYPE\ndbl (4): POSTCODE, XCOORD, YCOORD, Gp1Gp2 Winnings\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nAfter importing the data file into R, it is important for us to examine if the data file has been imported correctly.\nThe code chunk below shows list() is used to do the job.\n\nlist(sgpools) \n\n[[1]]\n# A tibble: 306 × 7\n   NAME           ADDRESS POSTCODE XCOORD YCOORD `OUTLET TYPE` `Gp1Gp2 Winnings`\n   &lt;chr&gt;          &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                     &lt;dbl&gt;\n 1 Livewire (Mar… 2 Bayf…    18972 30842. 29599. Branch                        5\n 2 Livewire (Res… 26 Sen…    98138 26704. 26526. Branch                       11\n 3 SportsBuzz (K… Lotus …   738078 20118. 44888. Branch                        0\n 4 SportsBuzz (P… 1 Sele…   188306 29777. 31382. Branch                       44\n 5 Prime Serango… Blk 54…   552542 32239. 39519. Branch                        0\n 6 Singapore Poo… 1A Woo…   731001 21012. 46987. Branch                        3\n 7 Singapore Poo… Blk 64…   370064 33990. 34356. Branch                       17\n 8 Singapore Poo… Blk 88…   370088 33847. 33976. Branch                       16\n 9 Singapore Poo… Blk 30…   540308 33910. 41275. Branch                       21\n10 Singapore Poo… Blk 20…   560202 29246. 38943. Branch                       25\n# ℹ 296 more rows\n\n\nNotice that the sgpools data in tibble data frame and not the common R data frame."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#creating-a-sf-data-frame-from-an-aspatial-data-frame",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#creating-a-sf-data-frame-from-an-aspatial-data-frame",
+    "title": "Hands-on Exercise 8",
+    "section": "Creating a sf data frame from an aspatial data frame",
+    "text": "Creating a sf data frame from an aspatial data frame\nThe code chunk below converts sgpools data frame into a simple feature data frame by using st_as_sf() of sf packages\n\nsgpools_sf &lt;- st_as_sf(sgpools, \n                       coords = c(\"XCOORD\", \"YCOORD\"),\n                       crs= 3414)\n\nThings to learn from the arguments above:\nThe coords argument requires you to provide the column name of the x-coordinates first then followed by the column name of the y-coordinates. The crs argument required you to provide the coordinates system in epsg format. EPSG: 3414 is Singapore SVY21 Projected Coordinate System. You can search for other country’s epsg code by refering to epsg.io. Figure below shows the data table of sgpools_sf. Notice that a new column called geometry has been added into the data frame. You can display the basic information of the newly created sgpools_sf by using the code chunk below.\n\nlist(sgpools_sf)\n\n[[1]]\nSimple feature collection with 306 features and 5 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: 7844.194 ymin: 26525.7 xmax: 45176.57 ymax: 47987.13\nProjected CRS: SVY21 / Singapore TM\n# A tibble: 306 × 6\n   NAME                         ADDRESS POSTCODE `OUTLET TYPE` `Gp1Gp2 Winnings`\n * &lt;chr&gt;                        &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;                     &lt;dbl&gt;\n 1 Livewire (Marina Bay Sands)  2 Bayf…    18972 Branch                        5\n 2 Livewire (Resorts World Sen… 26 Sen…    98138 Branch                       11\n 3 SportsBuzz (Kranji)          Lotus …   738078 Branch                        0\n 4 SportsBuzz (PoMo)            1 Sele…   188306 Branch                       44\n 5 Prime Serangoon North        Blk 54…   552542 Branch                        0\n 6 Singapore Pools Woodlands C… 1A Woo…   731001 Branch                        3\n 7 Singapore Pools 64 Circuit … Blk 64…   370064 Branch                       17\n 8 Singapore Pools 88 Circuit … Blk 88…   370088 Branch                       16\n 9 Singapore Pools Anchorvale … Blk 30…   540308 Branch                       21\n10 Singapore Pools Ang Mo Kio … Blk 20…   560202 Branch                       25\n# ℹ 296 more rows\n# ℹ 1 more variable: geometry &lt;POINT [m]&gt;\n\n\nThe output shows that sgppols_sf is in point feature class. It’s epsg ID is 3414. The bbox provides information of the extend of the geospatial data."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#drawing-proportional-symbol-map",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#drawing-proportional-symbol-map",
+    "title": "Hands-on Exercise 8",
+    "section": "Drawing Proportional Symbol Map",
+    "text": "Drawing Proportional Symbol Map\nTo create an interactive proportional symbol map in R, the view mode of tmap will be used.\nThe code churn below will turn on the interactive mode of tmap.\n\ntmap_mode(\"view\")\n\nℹ tmap modes \"plot\" - \"view\""
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#it-all-started-with-an-interactive-point-symbol-map",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#it-all-started-with-an-interactive-point-symbol-map",
+    "title": "Hands-on Exercise 8",
+    "section": "It all started with an interactive point symbol map",
+    "text": "It all started with an interactive point symbol map\nThe code chunks below are used to create an interactive point symbol map.\n\ntm_shape(sgpools_sf) + \n  tm_bubbles(fill = \"red\",\n           size = 1,\n           col = \"black\",\n           lwd = 1)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#lets-make-it-proportional",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#lets-make-it-proportional",
+    "title": "Hands-on Exercise 8",
+    "section": "Lets make it proportional",
+    "text": "Lets make it proportional\nTo draw a proportional symbol map, we need to assign a numerical variable to the size visual attribute. The code chunks below show that the variable Gp1Gp2Winnings is assigned to size visual attribute.\n\ntm_shape(sgpools_sf) + \n  tm_bubbles(fill = \"red\",\n             size = \"Gp1Gp2 Winnings\",\n             col = \"black\",\n             lwd = 1)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#lets-give-it-a-different-colour",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#lets-give-it-a-different-colour",
+    "title": "Hands-on Exercise 8",
+    "section": "Lets give it a different colour",
+    "text": "Lets give it a different colour\nThe proportional symbol map can be further improved by using the colour visual attribute. In the code chunks below, OUTLET_TYPE variable is used as the colour attribute variable.\n\ntm_shape(sgpools_sf) + \n  tm_bubbles(fill = \"OUTLET TYPE\", \n             size = \"Gp1Gp2 Winnings\",\n             col = \"black\",\n             lwd = 1)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#i-have-a-twin-brothers",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#i-have-a-twin-brothers",
+    "title": "Hands-on Exercise 8",
+    "section": "I have a twin brothers :)",
+    "text": "I have a twin brothers :)\nAn impressive and little-know feature of tmap’s view mode is that it also works with faceted plots. The argument sync in tm_facets() can be used in this case to produce multiple maps with synchronised zoom and pan settings.\n\ntm_shape(sgpools_sf) + \n  tm_bubbles(fill = \"OUTLET TYPE\", \n             size = \"Gp1Gp2 Winnings\",\n             col = \"black\",\n             lwd = 1) + \n  tm_facets(by= \"OUTLET TYPE\",\n            nrow = 1,\n            sync = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBefore you end the session, it is wiser to switch tmap’s Viewer back to plot mode by using the code chunk below.\n\ntmap_mode(\"plot\")\n\nℹ tmap modes \"plot\" - \"view\""
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#install-and-launching-r-packages-1",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#install-and-launching-r-packages-1",
+    "title": "Hands-on Exercise 8",
+    "section": "Install and launching R packages",
+    "text": "Install and launching R packages\nThe code chunks below will accomplish the task.\n\npacman::p_load(tmap, tidyverse, sf)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#importing-the-data-1",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#importing-the-data-1",
+    "title": "Hands-on Exercise 8",
+    "section": "Importing the data",
+    "text": "Importing the data\nFor the purpose of this hands-on exercise, a prepared data set called NGA_wp.rds will be used. The data set is a polygon feature data.frame providing information on water point of Nigeria at the LGA level. You can find the data set in the rds sub-direct of the hands-on data folder.\n\nNGA_wp &lt;- read_rds(\"data/rds/NGA_wp.rds\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#visualising-distribution-of-non-functional-water-point",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#visualising-distribution-of-non-functional-water-point",
+    "title": "Hands-on Exercise 8",
+    "section": "Visualising distribution of non-functional water point",
+    "text": "Visualising distribution of non-functional water point\n\np1 &lt;- tm_shape(NGA_wp) +\n  tm_polygons(fill = \"wp_functional\",\n             fill.scale = tm_scale_intervals(\n               style = \"equal\",\n               n = 10,\n               values = \"brewer.blues\"),\n             fill.legend = tm_legend(\n               position = c(\"right\", \"bottom\"))) +\n  tm_borders(lwd = 0.1,\n             fill_alpha = 1) +\n  tm_title(\"Distribution of functional water point by LGAs\")\n\n\np2 &lt;- tm_shape(NGA_wp) + \n  tm_polygons(fill = \"total_wp\", \n              fill.scale = tm_scale_intervals(\n                style = \"equal\",\n                n = 10,\n                values = \"brewer.blues\"),\n              fill.legend = tm_legend(\n                position = c(\"right\", \"bottom\"))) +\n  tm_borders(lwd = 0.1, \n             fill_alpha = 1) + \n  tm_title(\"Distribution of total  water point by LGAs\")\n\n\ntmap_arrange(p2, p1, nrow = 1)\n\n[plot mode] fit legend/component: Some legend items or map compoments do not\nfit well, and are therefore rescaled.\nℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.\n[plot mode] fit legend/component: Some legend items or map compoments do not\nfit well, and are therefore rescaled.\nℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#deriving-proportion-of-functional-water-points-and-non-functional-water-points",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#deriving-proportion-of-functional-water-points-and-non-functional-water-points",
+    "title": "Hands-on Exercise 8",
+    "section": "Deriving Proportion of Functional Water Points and Non-Functional Water Points",
+    "text": "Deriving Proportion of Functional Water Points and Non-Functional Water Points\nWe will tabulate the proportion of functional water points and the proportion of non-functional water points in each LGA. In the following code chunk, mutate() from dplyr package is used to derive two fields, namely pct_functional and pct_nonfunctional.\n\nNGA_wp &lt;- NGA_wp %&gt;%\n  mutate(pct_functional = wp_functional/total_wp) %&gt;%\n  mutate(pct_nonfunctional = wp_nonfunctional/total_wp)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#plotting-map-of-rate",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#plotting-map-of-rate",
+    "title": "Hands-on Exercise 8",
+    "section": "Plotting map of rate",
+    "text": "Plotting map of rate\n\ntm_shape(NGA_wp) +\n  tm_polygons(\"pct_functional\",\n              fill.scale = tm_scale_intervals(\n                style = \"equal\",\n                n = 10,\n                values = \"brewer.blues\"),\n              fill.legend = tm_legend(\n                position = c(\"right\", \"bottom\"))) + \n  tm_borders(lwd = 0.1,\n             fill_alpha = 1) +\n  tm_title(\"Rate map of functional water point by LGAs\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#data-preparation-1",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#data-preparation-1",
+    "title": "Hands-on Exercise 8",
+    "section": "Data Preparation",
+    "text": "Data Preparation\nStep 1: Exclude records with NA by using the code chunk below.\n\nNGA_wp &lt;- NGA_wp %&gt;%\n  drop_na()\n\nStep 2: Creating customised classification and extracting values\n\npercent &lt;- c(0,.01,.1,.5,.9,.99,1)\nvar &lt;- NGA_wp[\"pct_functional\"] %&gt;%\n  st_set_geometry(NULL)\nquantile(var[,1], percent)\n\n       0%        1%       10%       50%       90%       99%      100% \n0.0000000 0.0000000 0.2169811 0.4791667 0.8611111 1.0000000 1.0000000"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#creating-the-get.var-function",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#creating-the-get.var-function",
+    "title": "Hands-on Exercise 8",
+    "section": "Creating the get.var function",
+    "text": "Creating the get.var function\nFirstly, we will write an R function as shown below to extract a variable (i.e. wp_nonfunctional) as a vector out of an sf data.frame.\narguments: vname: variable name (as character, in quotes) df: name of sf data frame returns: v: vector with values (without a column name)\n\nget.var &lt;- function(vname,df) {\n  v &lt;- df[vname] %&gt;% \n    st_set_geometry(NULL)\n  v &lt;- unname(v[,1])\n  return(v)\n}"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#a-percentile-mapping-function",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#a-percentile-mapping-function",
+    "title": "Hands-on Exercise 8",
+    "section": "A percentile mapping function",
+    "text": "A percentile mapping function\nNext, we will write a percentile mapping function by using the code chunk below.\n\npercentmap &lt;- function(vnam, df, legtitle=NA, mtitle=\"Percentile Map\"){\n  percent &lt;- c(0,.01,.1,.5,.9,.99,1)\n  var &lt;- get.var(vnam, df)\n  bperc &lt;- quantile(var, percent)\n  tm_shape(df) +\n  tm_polygons() +\n  tm_shape(df) +\n     tm_polygons(vnam,\n             title=legtitle,\n             breaks=bperc,\n             palette=\"Blues\",\n          labels=c(\"&lt; 1%\", \"1% - 10%\", \"10% - 50%\", \"50% - 90%\", \"90% - 99%\", \"&gt; 99%\"))  +\n  tm_borders() +\n  tm_layout(main.title = mtitle, \n            title.position = c(\"right\",\"bottom\"))\n}"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#test-drive-the-percentile-mapping-function",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#test-drive-the-percentile-mapping-function",
+    "title": "Hands-on Exercise 8",
+    "section": "Test drive the percentile mapping function",
+    "text": "Test drive the percentile mapping function\nTo run the function, type the code chunk as shown below.\n\npercentmap(\"total_wp\", NGA_wp)\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_tm_polygons()`: migrate the argument(s) related to the scale of\nthe visual variable `fill` namely 'breaks', 'palette' (rename to 'values'),\n'labels' to fill.scale = tm_scale(&lt;HERE&gt;).\n[v3-&gt;v4] `tm_polygons()`: migrate the argument(s) related to the legend of the\nvisual variable `fill` namely 'title' to 'fill.legend = tm_legend(&lt;HERE&gt;)'\n[v3-&gt;v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(title = )`\n[v3-&gt;v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`\n[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"\nMultiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned.\n\n\n\n\n\n\n\n\n\nNote that this is just a bare bones implementation. Additional arguments such as the title, legend positioning just to name a few of them, could be passed to customise various features of the map."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#box-map",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#box-map",
+    "title": "Hands-on Exercise 8",
+    "section": "Box map",
+    "text": "Box map\nIn essence, a box map is an augmented quartile map, with an additional lower and upper category. When there are lower outliers, then the starting point for the breaks is the minimum value, and the second break is the lower fence. In contrast, when there are no lower outliers, then the starting point for the breaks will be the lower fence, and the second break is the minimum value (there will be no observations that fall in the interval between the lower fence and the minimum value).\n\nggplot(data = NGA_wp,\n       aes(x = \"\",\n           y = wp_nonfunctional)) +\n  geom_boxplot()\n\n\n\n\n\n\n\n\nDisplaying summary statistics on a choropleth map by using the basic principles of boxplot.\nTo create a box map, a custom breaks specification will be used. However, there is a complication. The break points for the box map vary depending on whether lower or upper outliers are present."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#creating-the-boxbreaks-function",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#creating-the-boxbreaks-function",
+    "title": "Hands-on Exercise 8",
+    "section": "Creating the boxbreaks function",
+    "text": "Creating the boxbreaks function\nThe code chunk below is an R function that creating break points for a box map.\narguments: v: vector with observations mult: multiplier for IQR (default 1.5) returns: bb: vector with 7 break points compute quartile and fences\n\nboxbreaks &lt;- function(v,mult=1.5) {\n  qv &lt;- unname(quantile(v))\n  iqr &lt;- qv[4] - qv[2]\n  upfence &lt;- qv[4] + mult * iqr\n  lofence &lt;- qv[2] - mult * iqr\n  # initialize break points vector\n  bb &lt;- vector(mode=\"numeric\",length=7)\n  # logic for lower and upper fences\n  if (lofence &lt; qv[1]) {  # no lower outliers\n    bb[1] &lt;- lofence\n    bb[2] &lt;- floor(qv[1])\n  } else {\n    bb[2] &lt;- lofence\n    bb[1] &lt;- qv[1]\n  }\n  if (upfence &gt; qv[5]) { # no upper outliers\n    bb[7] &lt;- upfence\n    bb[6] &lt;- ceiling(qv[5])\n  } else {\n    bb[6] &lt;- upfence\n    bb[7] &lt;- qv[5]\n  }\n  bb[3:5] &lt;- qv[2:4]\n  return(bb)\n}"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#creating-the-get.var-function-1",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#creating-the-get.var-function-1",
+    "title": "Hands-on Exercise 8",
+    "section": "Creating the get.var function",
+    "text": "Creating the get.var function\nThe code chunk below is an R function to extract a variable as a vector out of an sf data frame.\narguments: vname: variable name (as character, in quotes) df: name of sf data frame returns: v: vector with values (without a column name)\n\nget.var &lt;- function(vname,df) {\n  v &lt;- df[vname] %&gt;% st_set_geometry(NULL)\n  v &lt;- unname(v[,1])\n  return(v)\n}"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#test-drive-the-newly-created-function",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#test-drive-the-newly-created-function",
+    "title": "Hands-on Exercise 8",
+    "section": "Test drive the newly created function",
+    "text": "Test drive the newly created function\nLet’s test the newly created function\n\nvar &lt;- get.var(\"wp_nonfunctional\", NGA_wp) \nboxbreaks(var)\n\n[1] -56.5   0.0  14.0  34.0  61.0 131.5 278.0"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#boxmap-function",
+    "href": "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html#boxmap-function",
+    "title": "Hands-on Exercise 8",
+    "section": "Boxmap function",
+    "text": "Boxmap function\nThe code chunk below is an R function to create a box map. - arguments: - vnam: variable name (as character, in quotes) - df: simple features polygon layer - legtitle: legend title - mtitle: map title - mult: multiplier for IQR - returns: - a tmap-element (plots a map)\n\nboxmap &lt;- function(vnam, df, \n                   legtitle=NA,\n                   mtitle=\"Box Map\",\n                   mult=1.5){\n  var &lt;- get.var(vnam,df)\n  bb &lt;- boxbreaks(var)\n  tm_shape(df) +\n    tm_polygons() +\n  tm_shape(df) +\n     tm_fill(vnam,title=legtitle,\n             breaks=bb,\n             palette=\"Blues\",\n          labels = c(\"lower outlier\", \n                     \"&lt; 25%\", \n                     \"25% - 50%\", \n                     \"50% - 75%\",\n                     \"&gt; 75%\", \n                     \"upper outlier\"))  +\n  tm_borders() +\n  tm_layout(main.title = mtitle, \n            title.position = c(\"left\",\n                               \"top\"))\n}\n\n\ntmap_mode(\"plot\")\n\nℹ tmap modes \"plot\" - \"view\"\n\nboxmap(\"wp_nonfunctional\", NGA_wp)\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n[v3-&gt;v4] `tm_tm_fill()`: migrate the argument(s) related to the scale of the\nvisual variable `fill` namely 'breaks', 'palette' (rename to 'values'),\n'labels' to fill.scale = tm_scale(&lt;HERE&gt;).[v3-&gt;v4] `tm_fill()`: migrate the argument(s) related to the legend of the\nvisual variable `fill` namely 'title' to 'fill.legend = tm_legend(&lt;HERE&gt;)'[v3-&gt;v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(title = )`[v3-&gt;v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`[cols4all] color palettes: use palettes from the R package cols4all. Run\n`cols4all::c4a_gui()` to explore them. The old palette name \"Blues\" is named\n\"brewer.blues\"Multiple palettes called \"blues\" found: \"brewer.blues\", \"matplotlib.blues\". The first one, \"brewer.blues\", is returned."
   }
 ]
