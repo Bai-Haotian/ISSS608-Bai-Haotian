@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -166,8 +201,37 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#ui-design" id="toc-ui-design" class="nav-link active" data-scroll-target="#ui-design">UI Design</a>
+  <ul class="collapse">
+  <li><a href="#storyboard" id="toc-storyboard" class="nav-link" data-scroll-target="#storyboard">Storyboard</a></li>
+  <li><a href="#description-of-ui-components" id="toc-description-of-ui-components" class="nav-link" data-scroll-target="#description-of-ui-components">Description of UI Components</a></li>
+  </ul></li>
+  <li><a href="#ui-design-for-cluster-analysis-module" id="toc-ui-design-for-cluster-analysis-module" class="nav-link" data-scroll-target="#ui-design-for-cluster-analysis-module">UI Design for Cluster Analysis Module</a>
+  <ul class="collapse">
+  <li><a href="#storyboard-for-cluster-analysis-module" id="toc-storyboard-for-cluster-analysis-module" class="nav-link" data-scroll-target="#storyboard-for-cluster-analysis-module">Storyboard for Cluster Analysis Module</a></li>
+  <li><a href="#description-of-ui-components-for-cluster-analysis" id="toc-description-of-ui-components-for-cluster-analysis" class="nav-link" data-scroll-target="#description-of-ui-components-for-cluster-analysis">Description of UI Components for Cluster Analysis</a></li>
+  <li><a href="#rationale-for-the-cluster-analysis-ui-design" id="toc-rationale-for-the-cluster-analysis-ui-design" class="nav-link" data-scroll-target="#rationale-for-the-cluster-analysis-ui-design">Rationale for the Cluster Analysis UI Design</a></li>
+  </ul></li>
+  <li><a href="#cluster-analysis" id="toc-cluster-analysis" class="nav-link" data-scroll-target="#cluster-analysis">Cluster Analysis</a>
+  <ul class="collapse">
+  <li><a href="#load-packages-and-data" id="toc-load-packages-and-data" class="nav-link" data-scroll-target="#load-packages-and-data">Load Packages and Data</a></li>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data Preparation</a></li>
+  <li><a href="#variable-recoding-for-latent-class-analysis" id="toc-variable-recoding-for-latent-class-analysis" class="nav-link" data-scroll-target="#variable-recoding-for-latent-class-analysis">Variable Recoding for Latent Class Analysis</a></li>
+  <li><a href="#latent-class-analysis" id="toc-latent-class-analysis" class="nav-link" data-scroll-target="#latent-class-analysis">Latent Class Analysis</a></li>
+  <li><a href="#plot-bic" id="toc-plot-bic" class="nav-link" data-scroll-target="#plot-bic">Plot BIC</a></li>
+  <li><a href="#plot-aic" id="toc-plot-aic" class="nav-link" data-scroll-target="#plot-aic">Plot AIC</a></li>
+  <li><a href="#plot-entropy" id="toc-plot-entropy" class="nav-link" data-scroll-target="#plot-entropy">Plot Entropy</a></li>
+  <li><a href="#final-model-selection" id="toc-final-model-selection" class="nav-link" data-scroll-target="#final-model-selection">Final Model Selection</a></li>
+  <li><a href="#visualising-results" id="toc-visualising-results" class="nav-link" data-scroll-target="#visualising-results">Visualising Results</a></li>
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation">Interpretation</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -197,8 +261,1361 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>library(shiny) library(bslib)</p>
+<section id="ui-design" class="level2">
+<h2 class="anchored" data-anchor-id="ui-design">UI Design</h2>
+<p>The following section presents the overall user interface design for the proposed Shiny application. The application adopts a sidebar-and-main-panel layout to provide a clear and consistent user experience. The left sidebar is used for navigation across analytical modules, while the main panel is designed to display visual outputs, statistical results, and explanatory content.</p>
+<section id="storyboard" class="level3">
+<h3 class="anchored">Storyboard</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div style="display:flex; min-height:700px; font-family:Arial, sans-serif; background:#f5f5f5; border:1px solid #ddd;">
+<div style="width:260px; background:linear-gradient(180deg, #050312 0%, #0b0a24 100%); color:white; padding:20px 18px;">
+<div style="width:160px; height:160px; background:#02030b; margin:10px auto 20px auto; display:flex; align-items:center; justify-content:center;">
+<div style="color:white; text-align:center; line-height:0.9; font-weight:700; font-size:34px; text-transform:lowercase;">
+<div>Colombian</div>
+</div>
+</div>
+<div style="margin-bottom:20px;">
+<input type="text" placeholder="Search" style="width:100%; padding:8px; border-radius:4px; border:none;">
+</div>
+<div style="display:flex; flex-direction:column; gap:10px; font-size:16px;">
+<div style="color:#57d7c9;">Home</div>
+<div>Project Minutes</div>
+<div>Data Preparation</div>
+<div>Exploratory Data Analysis</div>
+<div>Confirmatory Data Analysis</div>
+<div>Cluster Analysis</div>
+<div>Decision Tree Analysis</div>
+<div>UI Design</div>
+</div>
+</div>
+<div style="flex:1; padding:35px 45px; background:#f5f5f5;">
+<h1 style="font-size:52px; font-weight:400; color:#4b4b4b; margin-bottom:16px;">Take-home Exercise 2</h1>
+<div style="text-transform:uppercase; color:#9ca3af; font-size:14px; letter-spacing:0.04em; margin-bottom:4px;">AUTHOR</div>
+<div style="font-size:18px; color:#4b5563; margin-bottom:28px;">Bai Haotian</div>
+<h2 style="font-size:22px; color:#4b5563; margin-top:20px;" class="anchored" data-anchor-id="storyboard">UI Design Overview</h2>
+<p style="font-size:18px; line-height:1.7; color:#4b5563;">This prototype adopts a sidebar navigation layout. The left panel contains the key navigation menu and search area, while the main panel is used to display content, visual analytics results, and module-specific outputs.</p>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:30px;">
+<div style="background:white; border-radius:8px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+<h3 class="anchored">Input Components</h3>
+<ul>
+<li>Search box</li>
+<li>Navigation menu</li>
+<li>Dropdown selection</li>
+<li>Slider input</li>
+<li>Checkbox filters</li>
+</ul>
+</div>
+<div style="background:white; border-radius:8px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+<h3 class="anchored">Output Components</h3>
+<ul>
+<li>Interactive charts</li>
+<li>Summary tables</li>
+<li>Analytical text outputs</li>
+<li>Model results</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="description-of-ui-components" class="level3">
+<h3 class="anchored" data-anchor-id="description-of-ui-components">Description of UI Components</h3>
+<p>The proposed user interface consists of the following major components:</p>
+<ol type="1">
+<li><p><strong>Sidebar navigation panel</strong><br>
+The sidebar is used to organize the application into different functional modules. Users can switch between pages such as Home, Project Minutes, Data Preparation, Exploratory Data Analysis, Confirmatory Data Analysis, Cluster Analysis, Decision Tree Analysis, and UI Design.</p></li>
+<li><p><strong>Search box</strong><br>
+The search box is included to improve accessibility and help users quickly locate relevant content or modules within the application.</p></li>
+<li><p><strong>Main content panel</strong><br>
+The main panel is the primary display area for text, plots, analytical outputs, and model results. The displayed content changes according to the selected module.</p></li>
+<li><p><strong>Input components</strong><br>
+Different Shiny input widgets will be used depending on the analytical module, including dropdown menus, sliders, and checkbox filters.</p></li>
+<li><p><strong>Output components</strong><br>
+The output section will present the results of the analysis in the form of charts, tables, explanatory text, and model summaries.</p></li>
+</ol>
+</section>
+</section>
+<section id="ui-design-for-cluster-analysis-module" class="level2">
+<h2 class="anchored" data-anchor-id="ui-design-for-cluster-analysis-module">UI Design for Cluster Analysis Module</h2>
+<p>This section presents the proposed user interface design for the Cluster Analysis module. The purpose of this module is to allow users to explore tourist segmentation patterns interactively by selecting clustering variables and adjusting the number of clusters.</p>
+<section id="storyboard-for-cluster-analysis-module" class="level3">
+<h3 class="anchored">Storyboard for Cluster Analysis Module</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div style="display:flex; min-height:720px; font-family:Arial, sans-serif; background:#f5f5f5; border:1px solid #ddd;">
+<div style="width:260px; background:linear-gradient(180deg, #050312 0%, #0b0a24 100%); color:white; padding:20px 18px;">
+<div style="width:160px; height:160px; background:#02030b; margin:10px auto 20px auto; display:flex; align-items:center; justify-content:center;">
+<div style="color:white; text-align:center; line-height:0.9; font-weight:700; font-size:34px; text-transform:lowercase;">
+<div>Colombian</div>
+</div>
+</div>
+<div style="margin-bottom:18px;">
+<input type="text" placeholder="Search" style="width:100%; padding:8px; border-radius:4px; border:none;">
+</div>
+<div style="display:flex; flex-direction:column; gap:10px; font-size:16px; margin-bottom:28px;">
+<div>Home</div>
+<div>Project Minutes</div>
+<div>Data Preparation</div>
+<div>Exploratory Data Analysis</div>
+<div>Confirmatory Data Analysis</div>
+<div style="color:#57d7c9; font-weight:600;">Cluster Analysis</div>
+<div>Decision Tree Analysis</div>
+<div>UI Design</div>
+</div>
+<hr style="border:0; border-top:1px solid rgba(255,255,255,0.18);">
+<div style="margin-top:18px;">
+<div style="font-size:15px; font-weight:600; margin-bottom:10px;">Cluster Controls</div>
+<div style="font-size:14px; margin-bottom:6px;">Select variables</div>
+<div style="background:white; color:#333; padding:8px; border-radius:4px; margin-bottom:14px;">Age, Spending, Length of Stay</div>
+<div style="font-size:14px; margin-bottom:6px;">Number of clusters</div>
+<div style="background:white; color:#333; padding:8px; border-radius:4px; margin-bottom:14px;">3</div>
+<div style="font-size:14px; margin-bottom:6px;">Standardize variables</div>
+<div style="display:flex; align-items:center; gap:8px; font-size:14px;">
+<input type="checkbox" checked="checked">
+<span>Yes</span>
+</div>
+</div>
+</div>
+<div style="flex:1; padding:35px 45px; background:#f5f5f5;">
+<h1 style="font-size:52px; font-weight:400; color:#4b4b4b; margin-bottom:16px;">Cluster Analysis</h1>
+<div style="text-transform:uppercase; color:#9ca3af; font-size:14px; letter-spacing:0.04em; margin-bottom:4px;">AUTHOR</div>
+<div style="font-size:18px; color:#4b5563; margin-bottom:28px;">Bai Haotian</div>
+<h2 style="font-size:24px; color:#4b5563; margin-top:20px;" class="anchored" data-anchor-id="storyboard-for-cluster-analysis-module">Cluster Analysis Overview</h2>
+<p style="font-size:18px; line-height:1.7; color:#4b5563;">This module enables users to perform tourist segmentation by choosing clustering variables and adjusting the number of clusters. The results are displayed through a cluster plot and a summary table.</p>
+<div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-top:28px;">
+<div style="background:white; border-radius:8px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.08); min-height:320px;">
+<h3 style="margin-top:0;" class="anchored">Cluster Plot</h3>
+<div style="height:230px; border:2px dashed #cbd5e1; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#64748b; font-size:20px;">Scatter Plot of Cluster Results</div>
+</div>
+<div style="background:white; border-radius:8px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.08); min-height:320px;">
+<h3 style="margin-top:0;" class="anchored">Cluster Summary</h3>
+<ul>
+<li>Cluster 1: Budget tourists</li>
+<li>Cluster 2: Medium-spending tourists</li>
+<li>Cluster 3: High-spending tourists</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="description-of-ui-components-for-cluster-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="description-of-ui-components-for-cluster-analysis">Description of UI Components for Cluster Analysis</h3>
+<p>The proposed Cluster Analysis module consists of the following key user interface components:</p>
+<ol type="1">
+<li><p><strong>Variable selection input</strong><br>
+A dropdown-style selection control is used to allow users to choose the variables included in the clustering procedure, such as age, total spending, and length of stay.</p></li>
+<li><p><strong>Number of clusters selector</strong><br>
+A numeric or slider-based control is used to specify the number of clusters for the k-means clustering model.</p></li>
+<li><p><strong>Standardization option</strong><br>
+A checkbox input is used to indicate whether the selected variables should be standardized before clustering.</p></li>
+<li><p><strong>Cluster plot output</strong><br>
+The main panel contains a visual plot to display clustering results and show how tourists are grouped into distinct segments.</p></li>
+<li><p><strong>Cluster summary panel</strong><br>
+A summary area is included to describe the characteristics of each cluster and improve interpretability.</p></li>
+</ol>
+</section>
+<section id="rationale-for-the-cluster-analysis-ui-design" class="level3">
+<h3 class="anchored" data-anchor-id="rationale-for-the-cluster-analysis-ui-design">Rationale for the Cluster Analysis UI Design</h3>
+<p>The Cluster Analysis module is designed to balance simplicity and interpretability. The sidebar contains only the essential controls required for clustering, while the main panel focuses on presenting the results clearly through a visual plot and a summary panel. This design helps users understand how different parameter selections affect the clustering outcome and supports interactive exploration of tourist segments.</p>
+</section>
+</section>
+<section id="cluster-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="cluster-analysis">Cluster Analysis</h2>
+<section id="load-packages-and-data" class="level3">
+<h3 class="anchored" data-anchor-id="load-packages-and-data">Load Packages and Data</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"pacman"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">"pacman"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  tidyverse,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  dplyr,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  tidyr,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  poLCA,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  janitor,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  lubridate,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  scales</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>customer_data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"data/customer_data.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>transactions_data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"data/transactions_data.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The clustering analysis uses both the customer-level dataset and the transaction-level dataset. The two datasets are integrated by <code>customer_id</code> to construct a richer customer profile for latent class analysis.</p>
+<hr>
+</section>
+<section id="data-preparation" class="level3">
+<h3 class="anchored" data-anchor-id="data-preparation">Data Preparation</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># clean column names</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>customer_data <span class="ot">&lt;-</span> customer_data <span class="sc">%&gt;%</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>transactions_data <span class="ot">&lt;-</span> transactions_data <span class="sc">%&gt;%</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect names</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(customer_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "customer_id"                "age"                       
+ [3] "gender"                     "location"                  
+ [5] "income_bracket"             "occupation"                
+ [7] "education_level"            "marital_status"            
+ [9] "household_size"             "acquisition_channel"       
+[11] "customer_segment"           "savings_account"           
+[13] "credit_card"                "personal_loan"             
+[15] "investment_account"         "insurance_product"         
+[17] "active_products"            "app_logins_frequency"      
+[19] "feature_usage_diversity"    "bill_payment_user"         
+[21] "auto_savings_enabled"       "credit_utilization_ratio"  
+[23] "international_transactions" "failed_transactions"       
+[25] "tx_count"                   "avg_tx_value"              
+[27] "total_tx_volume"            "first_tx"                  
+[29] "last_tx"                    "base_satisfaction"         
+[31] "tx_satisfaction"            "product_satisfaction"      
+[33] "satisfaction_score"         "nps_score"                 
+[35] "last_survey_date"           "support_tickets_count"     
+[37] "resolved_tickets_ratio"     "app_store_rating"          
+[39] "feedback_sentiment"         "feature_requests"          
+[41] "complaint_topics"           "clv_segment"               
+[43] "monthly_transaction_count"  "average_transaction_value" 
+[45] "total_transaction_volume"   "transaction_frequency"     
+[47] "last_transaction_date"      "preferred_transaction_type"
+[49] "first_transaction_date"     "weekend_transaction_ratio" 
+[51] "avg_daily_transactions"     "customer_tenure"           
+[53] "churn_probability"          "customer_lifetime_value"   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(transactions_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "customer_id" "date"        "amount"      "type"       </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># convert date if a date column exists</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="st">"date"</span> <span class="sc">%in%</span> <span class="fu">names</span>(transactions_data)) {</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  transactions_data <span class="ot">&lt;-</span> transactions_data <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># aggregate transaction-level data into customer-level behavioural indicators</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>tx_summary <span class="ot">&lt;-</span> transactions_data <span class="sc">%&gt;%</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(customer_id) <span class="sc">%&gt;%</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">tx_total_count =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(),</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">tx_avg_amount =</span> <span class="fu">mean</span>(amount, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">tx_total_amount =</span> <span class="fu">sum</span>(amount, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">tx_type_diversity =</span> dplyr<span class="sc">::</span><span class="fu">n_distinct</span>(type),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">dominant_tx_type =</span> <span class="fu">names</span>(<span class="fu">sort</span>(<span class="fu">table</span>(type), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))[<span class="dv">1</span>],</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># merge customer and transaction summaries</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> customer_data <span class="sc">%&gt;%</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(tx_summary, <span class="at">by =</span> <span class="st">"customer_id"</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 48,723
+Columns: 59
+$ customer_id                &lt;dbl&gt; 93716481, 49020929, 52690950, 23199751, 619…
+$ age                        &lt;dbl&gt; 44, 44, 45, 45, 44, 45, 44, 44, 45, 44, 44,…
+$ gender                     &lt;chr&gt; "Male", "Male", "Male", "Male", "Female", "…
+$ location                   &lt;chr&gt; "Pereira, Risaralda", "Cali, Valle del Cauc…
+$ income_bracket             &lt;chr&gt; "Very High", "Medium", "High", "High", "Med…
+$ occupation                 &lt;chr&gt; "Engineer", "Construction Worker", "Constru…
+$ education_level            &lt;chr&gt; "Master", "Bachelor", "Bachelor", "High Sch…
+$ marital_status             &lt;chr&gt; "Married", "Married", "Married", "Single", …
+$ household_size             &lt;dbl&gt; 5, 2, 4, 2, 3, 4, 4, 3, 1, 3, 5, 3, 3, 7, 3…
+$ acquisition_channel        &lt;chr&gt; "Partnership", "Paid Ad", "Paid Ad", "Refer…
+$ customer_segment           &lt;chr&gt; "occasional", "regular", "inactive", "inact…
+$ savings_account            &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, T…
+$ credit_card                &lt;lgl&gt; TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE…
+$ personal_loan              &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, F…
+$ investment_account         &lt;lgl&gt; FALSE, FALSE, TRUE, TRUE, FALSE, TRUE, FALS…
+$ insurance_product          &lt;lgl&gt; TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FAL…
+$ active_products            &lt;dbl&gt; 1, 5, 3, 2, 1, 1, 1, 4, 2, 3, 1, 5, 3, 1, 1…
+$ app_logins_frequency       &lt;dbl&gt; 15, 30, 4, 15, 19, 15, 44, 22, 7, 11, 7, 30…
+$ feature_usage_diversity    &lt;dbl&gt; 3, 0, 4, 4, 1, 4, 6, 1, 1, 6, 3, 1, 2, 1, 3…
+$ bill_payment_user          &lt;lgl&gt; FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE,…
+$ auto_savings_enabled       &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FA…
+$ credit_utilization_ratio   &lt;dbl&gt; 0.17871029, NA, NA, NA, 0.40360553, 0.07786…
+$ international_transactions &lt;dbl&gt; 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0…
+$ failed_transactions        &lt;dbl&gt; 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0…
+$ tx_count                   &lt;dbl&gt; 76, 10, 10, 23, 18, 15, 24, 45, 134, 13, 18…
+$ avg_tx_value               &lt;dbl&gt; 1679872.4, 5445810.0, 640335.0, 660180.4, 1…
+$ total_tx_volume            &lt;dbl&gt; 127670300, 54458100, 6403350, 15184150, 262…
+$ first_tx                   &lt;date&gt; 2023-01-05, 2023-02-05, 2023-01-31, 2023-0…
+$ last_tx                    &lt;date&gt; 2023-12-25, 2023-12-20, 2023-12-12, 2023-1…
+$ base_satisfaction          &lt;dbl&gt; 9.213372, 6.073093, 8.198643, 7.529577, 6.6…
+$ tx_satisfaction            &lt;dbl&gt; 0.380, 0.050, 0.050, 0.115, 0.090, 0.075, 0…
+$ product_satisfaction       &lt;dbl&gt; 0.6, 0.2, 0.6, 0.4, 0.4, 0.6, 0.4, 0.4, 0.6…
+$ satisfaction_score         &lt;dbl&gt; 5, 3, 4, 4, 3, 4, 4, 4, 5, 4, 4, 5, 4, 3, 4…
+$ nps_score                  &lt;dbl&gt; -7, -46, -29, -31, -47, -29, -34, -36, -4, …
+$ last_survey_date           &lt;date&gt; 2023-12-16, 2023-05-05, 2023-11-16, 2023-0…
+$ support_tickets_count      &lt;dbl&gt; 1, 1, 0, 2, 2, 1, 1, 0, 2, 0, 0, 2, 3, 1, 0…
+$ resolved_tickets_ratio     &lt;dbl&gt; 0.0000000, 1.0000000, 0.0000000, 0.5000000,…
+$ app_store_rating           &lt;dbl&gt; 3.5, 4.0, 5.0, 4.5, 4.0, 4.0, 5.0, 4.5, 4.5…
+$ feedback_sentiment         &lt;chr&gt; "Neutral", "Positive", "Positive", "Positiv…
+$ feature_requests           &lt;chr&gt; "Budgeting tools", NA, NA, "Cryptocurrency …
+$ complaint_topics           &lt;chr&gt; NA, NA, NA, NA, "App performance", NA, NA, …
+$ clv_segment                &lt;chr&gt; "Gold", "Bronze", "Gold", "Bronze", "Gold",…
+$ monthly_transaction_count  &lt;dbl&gt; 1.428571, 1.571429, 2.500000, 1.555556, 2.1…
+$ average_transaction_value  &lt;dbl&gt; 6054025.0, 2127413.6, 3575915.0, 1513353.6,…
+$ total_transaction_volume   &lt;dbl&gt; 60540250, 23401550, 35759150, 21186950, 116…
+$ transaction_frequency      &lt;dbl&gt; 0.03076923, 0.03293413, 0.05000000, 0.04778…
+$ last_transaction_date      &lt;date&gt; 2023-12-05, 2023-12-18, 2023-10-27, 2023-1…
+$ preferred_transaction_type &lt;chr&gt; "Transfer", "Transfer", "Transfer", "Transf…
+$ first_transaction_date     &lt;date&gt; 2023-01-05, 2023-02-05, 2023-01-31, 2023-0…
+$ weekend_transaction_ratio  &lt;dbl&gt; 0.30000000, 0.18181818, 0.30000000, 0.14285…
+$ avg_daily_transactions     &lt;dbl&gt; 0.03076923, 0.03293413, 0.05000000, 0.04778…
+$ customer_tenure            &lt;dbl&gt; 11.633333, 11.500000, 8.766667, 10.733333, …
+$ churn_probability          &lt;dbl&gt; 0.3622688, 0.1817896, 0.3212651, 0.3366287,…
+$ customer_lifetime_value    &lt;dbl&gt; 312414808, 167022286, 19403711, 35978105, 3…
+$ tx_total_count             &lt;int&gt; 76, 10, 10, 23, 18, 15, 24, 45, 134, 13, 18…
+$ tx_avg_amount              &lt;dbl&gt; 1679872.4, 5445810.0, 640335.0, 660180.4, 1…
+$ tx_total_amount            &lt;dbl&gt; 127670300, 54458100, 6403350, 15184150, 262…
+$ tx_type_diversity          &lt;int&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 4, 3…
+$ dominant_tx_type           &lt;chr&gt; "Transfer", "Transfer", "Payment", "Transfe…</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  customer_id            age           gender            location        
+ Min.   :10000617   Min.   :29.00   Length:48723       Length:48723      
+ 1st Qu.:32708346   1st Qu.:30.00   Class :character   Class :character  
+ Median :55174470   Median :45.00   Mode  :character   Mode  :character  
+ Mean   :55027986   Mean   :44.54                                        
+ 3rd Qu.:77242332   3rd Qu.:59.00                                        
+ Max.   :99999798   Max.   :60.00                                        
+                                                                         
+ income_bracket      occupation        education_level    marital_status    
+ Length:48723       Length:48723       Length:48723       Length:48723      
+ Class :character   Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+ household_size   acquisition_channel customer_segment   savings_account
+ Min.   : 1.000   Length:48723        Length:48723       Mode :logical  
+ 1st Qu.: 2.000   Class :character    Class :character   FALSE:10264    
+ Median : 3.000   Mode  :character    Mode  :character   TRUE :38459    
+ Mean   : 3.496                                                         
+ 3rd Qu.: 4.000                                                         
+ Max.   :13.000                                                         
+                                                                        
+ credit_card     personal_loan   investment_account insurance_product
+ Mode :logical   Mode :logical   Mode :logical      Mode :logical    
+ FALSE:18263     FALSE:33321     FALSE:27985        FALSE:38388      
+ TRUE :30460     TRUE :15402     TRUE :20738        TRUE :10335      
+                                                                     
+                                                                     
+                                                                     
+                                                                     
+ active_products app_logins_frequency feature_usage_diversity bill_payment_user
+ Min.   :1.000   Min.   :  4.00       Min.   : 0.00           Mode :logical    
+ 1st Qu.:1.000   1st Qu.: 15.00       1st Qu.: 1.00           FALSE:14553      
+ Median :2.000   Median : 22.00       Median : 2.00           TRUE :34170      
+ Mean   :2.095   Mean   : 22.38       Mean   : 2.37                            
+ 3rd Qu.:3.000   3rd Qu.: 30.00       3rd Qu.: 4.00                            
+ Max.   :5.000   Max.   :100.00       Max.   :10.00                            
+                                                                               
+ auto_savings_enabled credit_utilization_ratio international_transactions
+ Mode :logical        Min.   :0.0002           Min.   :0.0000            
+ FALSE:29173          1st Qu.:0.1619           1st Qu.:0.0000            
+ TRUE :19550          Median :0.2659           Median :0.0000            
+                      Mean   :0.2869           Mean   :0.4939            
+                      3rd Qu.:0.3910           3rd Qu.:1.0000            
+                      Max.   :0.9375           Max.   :6.0000            
+                      NA's   :18263                                      
+ failed_transactions    tx_count         avg_tx_value      total_tx_volume    
+ Min.   :0.0000      Min.   :   10.00   Min.   :  318215   Min.   :3.182e+06  
+ 1st Qu.:0.0000      1st Qu.:   12.00   1st Qu.: 1339114   1st Qu.:2.016e+07  
+ Median :0.0000      Median :   18.00   Median : 1763107   Median :4.808e+07  
+ Mean   :0.1988      Mean   :   64.84   Mean   : 3564852   Mean   :2.575e+08  
+ 3rd Qu.:0.0000      3rd Qu.:   35.00   3rd Qu.: 4658536   3rd Qu.:1.204e+08  
+ Max.   :4.0000      Max.   :77465.00   Max.   :51670303   Max.   :1.073e+12  
+                                                                              
+    first_tx             last_tx           base_satisfaction tx_satisfaction 
+ Min.   :2023-01-04   Min.   :2023-05-11   Min.   : 4.250    Min.   :0.0500  
+ 1st Qu.:2023-01-07   1st Qu.:2023-12-05   1st Qu.: 7.326    1st Qu.:0.0600  
+ Median :2023-01-14   Median :2023-12-19   Median : 8.005    Median :0.0900  
+ Mean   :2023-01-21   Mean   :2023-12-11   Mean   : 8.001    Mean   :0.1772  
+ 3rd Qu.:2023-01-28   3rd Qu.:2023-12-26   3rd Qu.: 8.676    3rd Qu.:0.1750  
+ Max.   :2023-08-10   Max.   :2023-12-29   Max.   :11.937    Max.   :1.0000  
+                                                                             
+ product_satisfaction satisfaction_score   nps_score      last_survey_date    
+ Min.   :0.0000       Min.   :2.000      Min.   :-80.00   Min.   :2023-01-01  
+ 1st Qu.:0.4000       1st Qu.:4.000      1st Qu.:-34.00   1st Qu.:2023-04-01  
+ Median :0.4000       Median :4.000      Median :-28.00   Median :2023-07-03  
+ Mean   :0.4737       Mean   :4.162      Mean   :-26.76   Mean   :2023-07-02  
+ 3rd Qu.:0.6000       3rd Qu.:5.000      3rd Qu.:-19.00   3rd Qu.:2023-10-01  
+ Max.   :1.0000       Max.   :6.000      Max.   : 23.00   Max.   :2023-12-31  
+                                                                              
+ support_tickets_count resolved_tickets_ratio app_store_rating
+ Min.   :0.0000        Min.   :0.0000         Min.   :2.000   
+ 1st Qu.:0.0000        1st Qu.:0.0000         1st Qu.:4.000   
+ Median :1.0000        Median :0.5000         Median :4.000   
+ Mean   :0.9975        Mean   :0.5062         Mean   :4.156   
+ 3rd Qu.:2.0000        3rd Qu.:1.0000         3rd Qu.:4.500   
+ Max.   :7.0000        Max.   :1.0000         Max.   :5.000   
+                                                              
+ feedback_sentiment feature_requests   complaint_topics   clv_segment       
+ Length:48723       Length:48723       Length:48723       Length:48723      
+ Class :character   Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+ monthly_transaction_count average_transaction_value total_transaction_volume
+ Min.   :   1.000          Min.   :  318215          Min.   :3.182e+06       
+ 1st Qu.:   1.600          1st Qu.: 1339114          1st Qu.:2.016e+07       
+ Median :   2.000          Median : 1763107          Median :4.808e+07       
+ Mean   :   5.765          Mean   : 3564852          Mean   :2.575e+08       
+ 3rd Qu.:   3.091          3rd Qu.: 4658536          3rd Qu.:1.204e+08       
+ Max.   :6455.417          Max.   :51670303          Max.   :1.073e+12       
+                                                                             
+ transaction_frequency last_transaction_date preferred_transaction_type
+ Min.   :  0.02786     Min.   :2023-05-11    Length:48723              
+ 1st Qu.:  0.04154     1st Qu.:2023-12-05    Class :character          
+ Median :  0.05764     Median :2023-12-19    Mode  :character          
+ Mean   :  0.18656     Mean   :2023-12-11                              
+ 3rd Qu.:  0.10314     3rd Qu.:2023-12-26                              
+ Max.   :215.77994     Max.   :2023-12-29                              
+                                                                       
+ first_transaction_date weekend_transaction_ratio avg_daily_transactions
+ Min.   :2023-01-04     Min.   :0.0000            Min.   :  0.02786     
+ 1st Qu.:2023-01-07     1st Qu.:0.2143            1st Qu.:  0.04154     
+ Median :2023-01-14     Median :0.2800            Median :  0.05764     
+ Mean   :2023-01-21     Mean   :0.2829            Mean   :  0.18656     
+ 3rd Qu.:2023-01-28     3rd Qu.:0.3400            3rd Qu.:  0.10314     
+ Max.   :2023-08-10     Max.   :0.9091            Max.   :215.77994     
+                                                                        
+ customer_tenure churn_probability customer_lifetime_value tx_total_count    
+ Min.   : 4.70   Min.   :0.1143    Min.   :0.000e+00       Min.   :   10.00  
+ 1st Qu.:11.17   1st Qu.:0.3029    1st Qu.:5.841e+07       1st Qu.:   12.00  
+ Median :11.63   Median :0.3540    Median :1.297e+08       Median :   18.00  
+ Mean   :11.37   Mean   :0.3429    Mean   :3.282e+08       Mean   :   64.84  
+ 3rd Qu.:11.87   3rd Qu.:0.3927    3rd Qu.:2.974e+08       3rd Qu.:   35.00  
+ Max.   :11.97   Max.   :0.5006    Max.   :1.777e+10       Max.   :77465.00  
+                                                                             
+ tx_avg_amount      tx_total_amount     tx_type_diversity dominant_tx_type  
+ Min.   :  318215   Min.   :3.182e+06   Min.   :1.000     Length:48723      
+ 1st Qu.: 1339114   1st Qu.:2.016e+07   1st Qu.:3.000     Class :character  
+ Median : 1763107   Median :4.808e+07   Median :4.000     Mode  :character  
+ Mean   : 3564852   Mean   :2.575e+08   Mean   :3.714                       
+ 3rd Qu.: 4658536   3rd Qu.:1.204e+08   3rd Qu.:4.000                       
+ Max.   :51670303   Max.   :1.073e+12   Max.   :4.000                       
+                                                                            </code></pre>
+</div>
+</div>
+<p>The transaction dataset was first aggregated into customer-level behavioural indicators, including transaction count, average transaction amount, total transaction amount, transaction type diversity, and dominant transaction type. These indicators were then merged into the customer-level dataset.</p>
+<hr>
+</section>
+<section id="variable-recoding-for-latent-class-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="variable-recoding-for-latent-class-analysis">Variable Recoding for Latent Class Analysis</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df_lca <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_group =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>      age <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">"Young"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>      age <span class="sc">&lt;</span> <span class="dv">45</span> <span class="sc">~</span> <span class="st">"Middle-aged"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Senior"</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">household_group =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>      household_size <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Single"</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>      household_size <span class="sc">&lt;=</span> <span class="dv">3</span> <span class="sc">~</span> <span class="st">"Small household"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Large household"</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">active_products_group =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>      active_products <span class="sc">&lt;=</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Low"</span>,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>      active_products <span class="sc">&lt;=</span> <span class="dv">3</span> <span class="sc">~</span> <span class="st">"Medium"</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"High"</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">app_login_group =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>      app_logins_frequency <span class="sc">&lt;=</span> <span class="dv">5</span> <span class="sc">~</span> <span class="st">"Low"</span>,</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>      app_logins_frequency <span class="sc">&lt;=</span> <span class="dv">15</span> <span class="sc">~</span> <span class="st">"Medium"</span>,</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"High"</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">tx_amount_group =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>      tx_avg_amount <span class="sc">&lt;</span> <span class="fu">quantile</span>(tx_avg_amount, <span class="fl">0.33</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"Low"</span>,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>      tx_avg_amount <span class="sc">&lt;</span> <span class="fu">quantile</span>(tx_avg_amount, <span class="fl">0.67</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"Medium"</span>,</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"High"</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">tx_count_group =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>      tx_total_count <span class="sc">&lt;</span> <span class="fu">quantile</span>(tx_total_count, <span class="fl">0.33</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"Low"</span>,</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>      tx_total_count <span class="sc">&lt;</span> <span class="fu">quantile</span>(tx_total_count, <span class="fl">0.67</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"Medium"</span>,</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"High"</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">clv_value_group =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>      customer_lifetime_value <span class="sc">&lt;</span> <span class="fu">quantile</span>(customer_lifetime_value, <span class="fl">0.33</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"Low"</span>,</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>      customer_lifetime_value <span class="sc">&lt;</span> <span class="fu">quantile</span>(customer_lifetime_value, <span class="fl">0.67</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"Medium"</span>,</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"High"</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">churn_group =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>      churn_probability <span class="sc">&lt;</span> <span class="fl">0.33</span> <span class="sc">~</span> <span class="st">"Low risk"</span>,</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>      churn_probability <span class="sc">&lt;</span> <span class="fl">0.67</span> <span class="sc">~</span> <span class="st">"Medium risk"</span>,</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"High risk"</span></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">savings_account =</span> <span class="fu">ifelse</span>(savings_account, <span class="dv">2</span>, <span class="dv">1</span>),</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">credit_card =</span> <span class="fu">ifelse</span>(credit_card, <span class="dv">2</span>, <span class="dv">1</span>),</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">personal_loan =</span> <span class="fu">ifelse</span>(personal_loan, <span class="dv">2</span>, <span class="dv">1</span>),</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">investment_account =</span> <span class="fu">ifelse</span>(investment_account, <span class="dv">2</span>, <span class="dv">1</span>),</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">insurance_product =</span> <span class="fu">ifelse</span>(insurance_product, <span class="dv">2</span>, <span class="dv">1</span>),</span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">bill_payment_user =</span> <span class="fu">ifelse</span>(bill_payment_user, <span class="dv">2</span>, <span class="dv">1</span>),</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">auto_savings_enabled =</span> <span class="fu">ifelse</span>(auto_savings_enabled, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>    customer_id,</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>    gender,</span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>    income_bracket,</span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>    education_level,</span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>    marital_status,</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>    acquisition_channel,</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>    customer_segment,</span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>    clv_segment,</span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>    preferred_transaction_type,</span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>    dominant_tx_type,</span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>    age_group,</span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>    household_group,</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>    active_products_group,</span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>    app_login_group,</span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>    tx_amount_group,</span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>    tx_count_group,</span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>    clv_value_group,</span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>    churn_group,</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>    savings_account,</span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>    credit_card,</span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>    personal_loan,</span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>    investment_account,</span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>    insurance_product,</span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>    bill_payment_user,</span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>    auto_savings_enabled</span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">drop_na</span>()</span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a><span class="co"># convert all clustering variables except customer_id into factors</span></span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>df_lca[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(df_lca[<span class="sc">-</span><span class="dv">1</span>], factor)</span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a><span class="co"># check missing values</span></span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(df_lca, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               customer_id                     gender 
+                         0                          0 
+            income_bracket            education_level 
+                         0                          0 
+            marital_status        acquisition_channel 
+                         0                          0 
+          customer_segment                clv_segment 
+                         0                          0 
+preferred_transaction_type           dominant_tx_type 
+                         0                          0 
+                 age_group            household_group 
+                         0                          0 
+     active_products_group            app_login_group 
+                         0                          0 
+           tx_amount_group             tx_count_group 
+                         0                          0 
+           clv_value_group                churn_group 
+                         0                          0 
+           savings_account                credit_card 
+                         0                          0 
+             personal_loan         investment_account 
+                         0                          0 
+         insurance_product          bill_payment_user 
+                         0                          0 
+      auto_savings_enabled 
+                         0 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect structure</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df_lca)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [48,723 × 25] (S3: tbl_df/tbl/data.frame)
+ $ customer_id               : num [1:48723] 93716481 49020929 52690950 23199751 61997066 ...
+ $ gender                    : Factor w/ 3 levels "Female","Male",..: 2 2 2 2 1 1 2 2 2 2 ...
+ $ income_bracket            : Factor w/ 4 levels "High","Low","Medium",..: 4 3 1 1 3 3 3 3 3 3 ...
+ $ education_level           : Factor w/ 4 levels "Bachelor","High School",..: 3 1 1 2 1 4 3 1 3 1 ...
+ $ marital_status            : Factor w/ 4 levels "Divorced","Married",..: 2 2 2 3 2 2 3 2 3 3 ...
+ $ acquisition_channel       : Factor w/ 4 levels "Organic","Paid Ad",..: 3 2 2 4 2 4 1 4 1 2 ...
+ $ customer_segment          : Factor w/ 4 levels "inactive","occasional",..: 2 4 1 1 3 1 1 4 1 3 ...
+ $ clv_segment               : Factor w/ 4 levels "Bronze","Gold",..: 2 1 2 1 2 1 1 3 3 3 ...
+ $ preferred_transaction_type: Factor w/ 4 levels "Deposit","Payment",..: 3 3 3 3 2 3 2 3 3 3 ...
+ $ dominant_tx_type          : Factor w/ 4 levels "Deposit","Payment",..: 3 3 2 3 2 3 4 3 3 2 ...
+ $ age_group                 : Factor w/ 3 levels "Middle-aged",..: 1 1 2 2 1 2 1 1 2 1 ...
+ $ household_group           : Factor w/ 3 levels "Large household",..: 1 3 1 3 3 1 1 3 2 3 ...
+ $ active_products_group     : Factor w/ 3 levels "High","Low","Medium": 2 1 3 3 2 2 2 1 3 3 ...
+ $ app_login_group           : Factor w/ 3 levels "High","Low","Medium": 3 1 2 3 1 3 1 1 3 3 ...
+ $ tx_amount_group           : Factor w/ 3 levels "High","Low","Medium": 3 1 2 2 1 2 2 1 2 1 ...
+ $ tx_count_group            : Factor w/ 3 levels "High","Low","Medium": 1 2 2 3 3 3 3 1 1 2 ...
+ $ clv_value_group           : Factor w/ 3 levels "High","Low","Medium": 1 3 2 2 1 2 2 1 3 1 ...
+ $ churn_group               : Factor w/ 2 levels "Low risk","Medium risk": 2 1 1 2 2 2 2 1 2 1 ...
+ $ savings_account           : Factor w/ 2 levels "1","2": 2 2 2 2 2 2 2 2 2 2 ...
+ $ credit_card               : Factor w/ 2 levels "1","2": 2 1 1 1 2 2 2 1 2 2 ...
+ $ personal_loan             : Factor w/ 2 levels "1","2": 1 1 1 1 1 1 1 1 1 2 ...
+ $ investment_account        : Factor w/ 2 levels "1","2": 1 1 2 2 1 2 1 2 2 2 ...
+ $ insurance_product         : Factor w/ 2 levels "1","2": 2 1 2 1 1 1 1 1 1 1 ...
+ $ bill_payment_user         : Factor w/ 2 levels "1","2": 1 2 2 2 1 2 2 1 2 2 ...
+ $ auto_savings_enabled      : Factor w/ 2 levels "1","2": 1 1 1 1 1 2 1 2 1 2 ...</code></pre>
+</div>
+</div>
+<p>Following the processing style of the Tanzania prototype, several variables were transformed into categorical variables before clustering. Continuous variables such as age, average transaction amount, total transaction count, customer lifetime value, and churn probability were grouped into low, medium, and high categories. Boolean product-ownership indicators were recoded from TRUE/FALSE into 2/1 categories in order to make them compatible with the <code>poLCA</code> package.</p>
+<hr>
+</section>
+<section id="latent-class-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="latent-class-analysis">Latent Class Analysis</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">cbind</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  gender,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  income_bracket,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  education_level,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  marital_status,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  acquisition_channel,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  customer_segment,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  clv_segment,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  preferred_transaction_type,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  dominant_tx_type,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  age_group,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  household_group,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  active_products_group,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  app_login_group,</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  tx_amount_group,</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  tx_count_group,</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  clv_value_group,</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  churn_group,</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  savings_account,</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  credit_card,</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  personal_loan,</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  investment_account,</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  insurance_product,</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>  bill_payment_user,</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  auto_savings_enabled</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>) <span class="sc">~</span> <span class="dv">1</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>calc_entropy <span class="ot">&lt;-</span> <span class="cf">function</span>(posterior_mat) {</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(posterior_mat)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>  k <span class="ot">&lt;-</span> <span class="fu">ncol</span>(posterior_mat)</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>  raw_entropy <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">sum</span>(posterior_mat <span class="sc">*</span> <span class="fu">log</span>(posterior_mat <span class="sc">+</span> <span class="fl">1e-12</span>))</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">-</span> raw_entropy <span class="sc">/</span> (n <span class="sc">*</span> <span class="fu">log</span>(k))</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>model_stats <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>, <span class="cf">function</span>(k) {</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> poLCA<span class="sc">::</span><span class="fu">poLCA</span>(</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    f,</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> df_lca,</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">nclass =</span> k,</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrep =</span> <span class="dv">5</span>,</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxiter =</span> <span class="dv">5000</span>,</span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">nclass =</span> k,</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">AIC =</span> m<span class="sc">$</span>aic,</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">BIC =</span> m<span class="sc">$</span>bic,</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">entropy =</span> <span class="fu">calc_entropy</span>(m<span class="sc">$</span>posterior)</span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>model_stats</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 4
+  nclass      AIC      BIC entropy
+   &lt;int&gt;    &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+1      2 2003397. 2004250.   0.886
+2      3 1970941. 1972225.   0.955
+3      4 1957490. 1959205.   0.888
+4      5 1945855. 1948001.   0.867
+5      6 1927217. 1929794.   0.911</code></pre>
+</div>
+</div>
+<p>Latent Class Analysis (LCA) was used to identify hidden customer segments based on demographic, behavioural, and product-ownership variables. Models with two to six classes were estimated, and their fit was compared using AIC, BIC, and entropy.</p>
+<hr>
+</section>
+<section id="plot-bic" class="level3">
+<h3 class="anchored" data-anchor-id="plot-bic">Plot BIC</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(model_stats, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> nclass, <span class="at">y =</span> BIC)) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>, <span class="at">colour =</span> <span class="st">"#2C7FB8"</span>) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="st">"#2C7FB8"</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"BIC by Number of Classes"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of Classes"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"BIC"</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>BIC was used as the primary criterion for selecting the optimal number of latent classes. A lower BIC indicates a better trade-off between model fit and model complexity.</p>
+<hr>
+</section>
+<section id="plot-aic" class="level3">
+<h3 class="anchored" data-anchor-id="plot-aic">Plot AIC</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(model_stats, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> nclass, <span class="at">y =</span> AIC)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>, <span class="at">colour =</span> <span class="st">"#D95F0E"</span>) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="st">"#D95F0E"</span>) <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"AIC by Number of Classes"</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of Classes"</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"AIC"</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>AIC was also examined as a secondary fit criterion. In general, lower AIC values indicate improved model fit, although AIC tends to prefer slightly more complex models than BIC.</p>
+<hr>
+</section>
+<section id="plot-entropy" class="level3">
+<h3 class="anchored" data-anchor-id="plot-entropy">Plot Entropy</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(model_stats, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> nclass, <span class="at">y =</span> entropy)) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>, <span class="at">colour =</span> <span class="st">"#238B45"</span>) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="st">"#238B45"</span>) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">accuracy =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Entropy by Number of Classes"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of Classes"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Entropy"</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Entropy measures how clearly the observations are assigned to latent classes. Higher entropy indicates better class separation and greater certainty in class membership.</p>
+<hr>
+</section>
+<section id="final-model-selection" class="level3">
+<h3 class="anchored" data-anchor-id="final-model-selection">Final Model Selection</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>best_k <span class="ot">&lt;-</span> model_stats <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(BIC <span class="sc">==</span> <span class="fu">min</span>(BIC)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(nclass)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>best_k</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>LCA_model <span class="ot">&lt;-</span> poLCA<span class="sc">::</span><span class="fu">poLCA</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  f,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_lca,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">nclass =</span> best_k,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrep =</span> <span class="dv">5</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">5000</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model 1: llik = -969820.3 ... best llik = -969820.3
+Model 2: llik = -965642 ... best llik = -965642
+Model 3: llik = -967089.3 ... best llik = -965642
+Model 4: llik = -961877.5 ... best llik = -961877.5
+Model 5: llik = -968811.3 ... best llik = -961877.5
+Conditional item response (column) probabilities,
+ by outcome variable, for each class (row) 
+ 
+$gender
+           Pr(1)  Pr(2)  Pr(3)
+class 1:  0.5028 0.4816 0.0155
+class 2:  0.4956 0.4878 0.0167
+class 3:  0.4897 0.4902 0.0201
+class 4:  0.4888 0.4916 0.0196
+class 5:  0.4907 0.4885 0.0208
+class 6:  0.4979 0.4820 0.0201
+
+$income_bracket
+           Pr(1)  Pr(2)  Pr(3)  Pr(4)
+class 1:  0.6790 0.0000 0.1032 0.2179
+class 2:  0.2428 0.3071 0.4028 0.0473
+class 3:  0.1032 0.4012 0.4956 0.0000
+class 4:  0.2523 0.2971 0.3979 0.0527
+class 5:  0.1371 0.3810 0.4816 0.0003
+class 6:  0.2327 0.3113 0.4178 0.0383
+
+$education_level
+           Pr(1)  Pr(2)  Pr(3)  Pr(4)
+class 1:  0.3871 0.0331 0.3898 0.1900
+class 2:  0.4098 0.3951 0.1494 0.0456
+class 3:  0.3889 0.5254 0.0782 0.0074
+class 4:  0.4009 0.3950 0.1524 0.0518
+class 5:  0.4220 0.4845 0.0842 0.0093
+class 6:  0.4123 0.4139 0.1334 0.0404
+
+$marital_status
+           Pr(1)  Pr(2)  Pr(3)  Pr(4)
+class 1:  0.0936 0.3995 0.4586 0.0483
+class 2:  0.0972 0.4016 0.4552 0.0460
+class 3:  0.1026 0.4023 0.4482 0.0469
+class 4:  0.1024 0.3986 0.4497 0.0492
+class 5:  0.1054 0.4048 0.4396 0.0502
+class 6:  0.1057 0.4099 0.4316 0.0527
+
+$acquisition_channel
+           Pr(1)  Pr(2)  Pr(3)  Pr(4)
+class 1:  0.3981 0.2060 0.0963 0.2996
+class 2:  0.3959 0.2044 0.0986 0.3011
+class 3:  0.3885 0.2035 0.1003 0.3077
+class 4:  0.4019 0.1961 0.1012 0.3009
+class 5:  0.4028 0.2004 0.1054 0.2914
+class 6:  0.4140 0.1955 0.1013 0.2893
+
+$customer_segment
+           Pr(1)  Pr(2)  Pr(3)  Pr(4)
+class 1:  0.3640 0.6294 0.0000 0.0066
+class 2:  0.0000 0.0000 0.0286 0.9714
+class 3:  0.0000 0.9728 0.0000 0.0272
+class 4:  0.0000 0.0000 0.3997 0.6003
+class 5:  0.7854 0.2146 0.0000 0.0000
+class 6:  0.1776 0.8090 0.0000 0.0134
+
+$clv_segment
+           Pr(1)  Pr(2)  Pr(3)  Pr(4)
+class 1:  0.4484 0.1434 0.0294 0.3788
+class 2:  0.0523 0.4232 0.1371 0.3873
+class 3:  0.3374 0.1820 0.0386 0.4421
+class 4:  0.0000 0.2956 0.6733 0.0311
+class 5:  0.7682 0.0476 0.0084 0.1757
+class 6:  0.0062 0.3905 0.3761 0.2272
+
+$preferred_transaction_type
+           Pr(1)  Pr(2)  Pr(3)  Pr(4)
+class 1:  0.0091 0.1943 0.7645 0.0321
+class 2:  0.0088 0.2121 0.7502 0.0288
+class 3:  0.0101 0.2029 0.7605 0.0265
+class 4:  0.0101 0.2023 0.7612 0.0264
+class 5:  0.0064 0.2088 0.7591 0.0258
+class 6:  0.0095 0.2100 0.7547 0.0258
+
+$dominant_tx_type
+           Pr(1)  Pr(2)  Pr(3)  Pr(4)
+class 1:  0.0247 0.3101 0.6334 0.0318
+class 2:  0.0144 0.2915 0.6744 0.0197
+class 3:  0.0096 0.2543 0.7248 0.0113
+class 4:  0.0001 0.1724 0.8255 0.0020
+class 5:  0.0405 0.3429 0.5627 0.0539
+class 6:  0.0000 0.1069 0.8926 0.0005
+
+$age_group
+           Pr(1)  Pr(2)  Pr(3)
+class 1:  0.2237 0.7274 0.0490
+class 2:  0.3279 0.5085 0.1635
+class 3:  0.3714 0.4311 0.1975
+class 4:  0.3311 0.5005 0.1684
+class 5:  0.3635 0.4351 0.2014
+class 6:  0.3347 0.4868 0.1785
+
+$household_group
+           Pr(1)  Pr(2)  Pr(3)
+class 1:  0.4555 0.0859 0.4586
+class 2:  0.4496 0.0878 0.4626
+class 3:  0.4506 0.0853 0.4641
+class 4:  0.4610 0.0804 0.4587
+class 5:  0.4675 0.0790 0.4534
+class 6:  0.4567 0.0815 0.4618
+
+$active_products_group
+           Pr(1)  Pr(2)  Pr(3)
+class 1:  0.1351 0.4182 0.4467
+class 2:  0.1436 0.4068 0.4496
+class 3:  0.1545 0.3852 0.4604
+class 4:  0.1496 0.4000 0.4503
+class 5:  0.1534 0.4037 0.4428
+class 6:  0.1574 0.4041 0.4384
+
+$app_login_group
+           Pr(1)  Pr(2)  Pr(3)
+class 1:  0.6337 0.0324 0.3339
+class 2:  0.6403 0.0291 0.3305
+class 3:  0.6321 0.0288 0.3391
+class 4:  0.6429 0.0309 0.3262
+class 5:  0.6402 0.0313 0.3284
+class 6:  0.6430 0.0312 0.3258
+
+$tx_amount_group
+           Pr(1)  Pr(2)  Pr(3)
+class 1:  0.0000 0.6339 0.3661
+class 2:  0.6710 0.0000 0.3290
+class 3:  0.0000 0.2109 0.7891
+class 4:  0.9537 0.0000 0.0463
+class 5:  0.0000 1.0000 0.0000
+class 6:  0.0000 0.3298 0.6702
+
+$tx_count_group
+           Pr(1)  Pr(2)  Pr(3)
+class 1:  0.1670 0.4048 0.4282
+class 2:  0.0000 0.5874 0.4126
+class 3:  0.0266 0.4091 0.5643
+class 4:  0.5526 0.1298 0.3176
+class 5:  0.1732 0.4267 0.4000
+class 6:  1.0000 0.0000 0.0000
+
+$clv_value_group
+           Pr(1)  Pr(2)  Pr(3)
+class 1:  0.0000 0.6982 0.3018
+class 2:  0.1070 0.0000 0.8930
+class 3:  0.0002 0.4830 0.5167
+class 4:  0.9984 0.0008 0.0008
+class 5:  0.0000 0.9747 0.0253
+class 6:  0.4974 0.0000 0.5026
+
+$churn_group
+           Pr(1)  Pr(2)
+class 1:  0.3193 0.6807
+class 2:  0.3654 0.6346
+class 3:  0.3945 0.6055
+class 4:  0.3756 0.6244
+class 5:  0.3761 0.6239
+class 6:  0.3786 0.6214
+
+$savings_account
+           Pr(1)  Pr(2)
+class 1:  0.0000 1.0000
+class 2:  0.2134 0.7866
+class 3:  0.2805 0.7195
+class 4:  0.2128 0.7872
+class 5:  0.2712 0.7288
+class 6:  0.2114 0.7886
+
+$credit_card
+           Pr(1)  Pr(2)
+class 1:  0.0527 0.9473
+class 2:  0.3741 0.6259
+class 3:  0.4905 0.5095
+class 4:  0.3666 0.6334
+class 5:  0.4667 0.5333
+class 6:  0.3899 0.6101
+
+$personal_loan
+           Pr(1)  Pr(2)
+class 1:  0.5128 0.4872
+class 2:  0.6783 0.3217
+class 3:  0.7392 0.2608
+class 4:  0.6865 0.3135
+class 5:  0.7388 0.2612
+class 6:  0.6862 0.3138
+
+$investment_account
+           Pr(1)  Pr(2)
+class 1:  0.3372 0.6628
+class 2:  0.5798 0.4202
+class 3:  0.6482 0.3518
+class 4:  0.5789 0.4211
+class 5:  0.6351 0.3649
+class 6:  0.5836 0.4164
+
+$insurance_product
+           Pr(1)  Pr(2)
+class 1:  0.6703 0.3297
+class 2:  0.7875 0.2125
+class 3:  0.8255 0.1745
+class 4:  0.7866 0.2134
+class 5:  0.8232 0.1768
+class 6:  0.7940 0.2060
+
+$bill_payment_user
+           Pr(1)  Pr(2)
+class 1:  0.3030 0.6970
+class 2:  0.3005 0.6995
+class 3:  0.3011 0.6989
+class 4:  0.2958 0.7042
+class 5:  0.3031 0.6969
+class 6:  0.2904 0.7096
+
+$auto_savings_enabled
+           Pr(1)  Pr(2)
+class 1:  0.6023 0.3977
+class 2:  0.5948 0.4052
+class 3:  0.5849 0.4151
+class 4:  0.6045 0.3955
+class 5:  0.5928 0.4072
+class 6:  0.6137 0.3863
+
+Estimated class population shares 
+ 0.1119 0.1526 0.1726 0.2386 0.1727 0.1515 
+ 
+Predicted class memberships (by modal posterior prob.) 
+ 0.1092 0.1533 0.1682 0.2421 0.172 0.1551 
+ 
+========================================================= 
+Fit for 6 latent classes: 
+========================================================= 
+number of observations: 48723 
+number of estimated parameters: 293 
+residual degrees of freedom: 48430 
+maximum log-likelihood: -961877.5 
+ 
+AIC(6): 1924341
+BIC(6): 1926918
+G^2(6): 872078.2 (Likelihood ratio/deviance statistic) 
+X^2(6): 23025369148 (Chi-square goodness of fit) 
+ </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>LCA_model<span class="sc">$</span>P</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1118938 0.1526242 0.1726104 0.2386484 0.1727043 0.1515190</code></pre>
+</div>
+</div>
+<p>The final model was selected based on the lowest BIC value. The estimated class proportions indicate the relative size of each customer segment in the sample.</p>
+<hr>
+</section>
+<section id="visualising-results" class="level3">
+<h3 class="anchored" data-anchor-id="visualising-results">Visualising Results</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df_result <span class="ot">&lt;-</span> df_lca <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">cluster =</span> <span class="fu">factor</span>(LCA_model<span class="sc">$</span>predclass))</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>cluster_size <span class="ot">&lt;-</span> df_result <span class="sc">%&gt;%</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(cluster) <span class="sc">%&gt;%</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n))</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(cluster_size, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> cluster, <span class="at">y =</span> n, <span class="at">fill =</span> cluster)) <span class="sc">+</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_text</span>(</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(n, <span class="st">" ("</span>, scales<span class="sc">::</span><span class="fu">percent</span>(prop, <span class="at">accuracy =</span> <span class="fl">0.1</span>), <span class="st">")"</span>)),</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.4</span>,</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">4</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Cluster Size"</span>,</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Cluster"</span>,</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Customers"</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The cluster size chart shows the distribution of customers across the identified latent classes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>binary_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"savings_account"</span>,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"credit_card"</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"personal_loan"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"investment_account"</span>,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"insurance_product"</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bill_payment_user"</span>,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"auto_savings_enabled"</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>feature_profile <span class="ot">&lt;-</span> df_result <span class="sc">%&gt;%</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(<span class="fu">all_of</span>(binary_vars), <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">as.integer</span>(<span class="fu">as.character</span>(.)) <span class="sc">==</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(cluster) <span class="sc">%&gt;%</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(<span class="fu">all_of</span>(binary_vars), mean), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="sc">-</span>cluster, <span class="at">names_to =</span> <span class="st">"feature"</span>, <span class="at">values_to =</span> <span class="st">"probability"</span>)</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(feature_profile, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> feature, <span class="at">y =</span> cluster, <span class="at">fill =</span> probability)) <span class="sc">+</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"#F1EEF6"</span>, <span class="at">high =</span> <span class="st">"#045A8D"</span>, <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">accuracy =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Product Ownership Profile by Cluster"</span>,</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Feature"</span>,</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Cluster"</span>,</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Rate"</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(<span class="at">axis.text.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The heatmap summarises the product ownership patterns of each latent class. It helps reveal whether a cluster is characterised by low product engagement, broad financial product adoption, or selective product use.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>cluster_summary <span class="ot">&lt;-</span> df_result <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(cluster) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(),</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">most_common_segment =</span> <span class="fu">names</span>(<span class="fu">sort</span>(<span class="fu">table</span>(customer_segment), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))[<span class="dv">1</span>],</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">most_common_clv =</span> <span class="fu">names</span>(<span class="fu">sort</span>(<span class="fu">table</span>(clv_segment), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))[<span class="dv">1</span>],</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">most_common_tx_type =</span> <span class="fu">names</span>(<span class="fu">sort</span>(<span class="fu">table</span>(preferred_transaction_type), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))[<span class="dv">1</span>],</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">most_common_income =</span> <span class="fu">names</span>(<span class="fu">sort</span>(<span class="fu">table</span>(income_bracket), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))[<span class="dv">1</span>],</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>cluster_summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+  cluster     n most_common_segment most_common_clv most_common_tx_type
+  &lt;fct&gt;   &lt;int&gt; &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;              
+1 1        5320 occasional          Bronze          Transfer           
+2 2        7469 regular             Silver          Transfer           
+3 3        8195 occasional          Silver          Transfer           
+4 4       11798 regular             Platinum        Transfer           
+5 5        8382 inactive            Bronze          Transfer           
+6 6        7559 occasional          Gold            Transfer           
+# ℹ 1 more variable: most_common_income &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>The summary table provides a high-level interpretation of each cluster by highlighting the dominant customer segment, CLV segment, preferred transaction type, and income bracket.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>LCA_model<span class="sc">$</span>probs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$gender
+              Pr(1)     Pr(2)      Pr(3)
+class 1:  0.5028410 0.4816131 0.01554588
+class 2:  0.4955567 0.4877534 0.01668989
+class 3:  0.4896852 0.4902186 0.02009614
+class 4:  0.4887594 0.4916371 0.01960349
+class 5:  0.4907325 0.4884569 0.02081056
+class 6:  0.4978985 0.4820447 0.02005681
+
+$income_bracket
+              Pr(1)         Pr(2)     Pr(3)         Pr(4)
+class 1:  0.6789510 1.097035e-127 0.1031540  2.178950e-01
+class 2:  0.2427900  3.071006e-01 0.4027724  4.733697e-02
+class 3:  0.1031802  4.011898e-01 0.4956300 1.269725e-144
+class 4:  0.2523265  2.971415e-01 0.3978772  5.265476e-02
+class 5:  0.1371076  3.810159e-01 0.4816259  2.506427e-04
+class 6:  0.2326587  3.112888e-01 0.4177582  3.829437e-02
+
+$education_level
+              Pr(1)      Pr(2)      Pr(3)       Pr(4)
+class 1:  0.3870721 0.03309735 0.38981699 0.190013542
+class 2:  0.4098158 0.39513371 0.14942252 0.045627951
+class 3:  0.3888868 0.52544934 0.07824195 0.007421869
+class 4:  0.4009056 0.39496039 0.15236043 0.051773538
+class 5:  0.4220374 0.48451821 0.08415277 0.009291635
+class 6:  0.4122970 0.41390225 0.13341177 0.040389017
+
+$marital_status
+               Pr(1)     Pr(2)     Pr(3)      Pr(4)
+class 1:  0.09356999 0.3994559 0.4586410 0.04833315
+class 2:  0.09722113 0.4015611 0.4551767 0.04604102
+class 3:  0.10263831 0.4022884 0.4481670 0.04690634
+class 4:  0.10239998 0.3986415 0.4497244 0.04923417
+class 5:  0.10541704 0.4047840 0.4395582 0.05024072
+class 6:  0.10565428 0.4099496 0.4316498 0.05274633
+
+$acquisition_channel
+              Pr(1)     Pr(2)      Pr(3)     Pr(4)
+class 1:  0.3981069 0.2060428 0.09627180 0.2995785
+class 2:  0.3958557 0.2044054 0.09860544 0.3011334
+class 3:  0.3885008 0.2034982 0.10028558 0.3077155
+class 4:  0.4018777 0.1960913 0.10118046 0.3008506
+class 5:  0.4028296 0.2003726 0.10544208 0.2913557
+class 6:  0.4139528 0.1954744 0.10128341 0.2892894
+
+$customer_segment
+                  Pr(1)        Pr(2)      Pr(3)       Pr(4)
+class 1:   3.640030e-01 6.293513e-01 0.00000000 0.006645698
+class 2:   0.000000e+00 3.082368e-95 0.02862513 0.971374869
+class 3:  1.909217e-200 9.728086e-01 0.00000000 0.027191411
+class 4:   0.000000e+00 0.000000e+00 0.39966182 0.600338179
+class 5:   7.853609e-01 2.146391e-01 0.00000000 0.000000000
+class 6:   1.775796e-01 8.089950e-01 0.00000000 0.013425368
+
+$clv_segment
+                  Pr(1)      Pr(2)       Pr(3)     Pr(4)
+class 1:   4.483704e-01 0.14342846 0.029434724 0.3787664
+class 2:   5.231127e-02 0.42323510 0.137124249 0.3873294
+class 3:   3.373735e-01 0.18195827 0.038600527 0.4420677
+class 4:  5.843897e-117 0.29556117 0.673299728 0.0311391
+class 5:   7.682276e-01 0.04761418 0.008409087 0.1757491
+class 6:   6.210126e-03 0.39053649 0.376098377 0.2271550
+
+$preferred_transaction_type
+                Pr(1)     Pr(2)     Pr(3)      Pr(4)
+class 1:  0.009103366 0.1942759 0.7645408 0.03207993
+class 2:  0.008777675 0.2121271 0.7502492 0.02884594
+class 3:  0.010109379 0.2028609 0.7605072 0.02652246
+class 4:  0.010075097 0.2023163 0.7612485 0.02636002
+class 5:  0.006356536 0.2087741 0.7591180 0.02575143
+class 6:  0.009541252 0.2099696 0.7547054 0.02578376
+
+$dominant_tx_type
+                  Pr(1)     Pr(2)     Pr(3)        Pr(4)
+class 1:   2.468910e-02 0.3101497 0.6333860 0.0317751720
+class 2:   1.435182e-02 0.2914952 0.6744458 0.0197072694
+class 3:   9.633593e-03 0.2543222 0.7247732 0.0112709508
+class 4:   1.415663e-04 0.1724172 0.8254800 0.0019612528
+class 5:   4.052563e-02 0.3429281 0.5626943 0.0538519533
+class 6:  3.846005e-319 0.1068976 0.8926313 0.0004710807
+
+$age_group
+              Pr(1)     Pr(2)      Pr(3)
+class 1:  0.2236635 0.7273851 0.04895137
+class 2:  0.3279442 0.5085075 0.16354825
+class 3:  0.3713632 0.4311399 0.19749692
+class 4:  0.3310971 0.5004629 0.16843996
+class 5:  0.3634848 0.4350826 0.20143261
+class 6:  0.3347456 0.4868029 0.17845155
+
+$household_group
+              Pr(1)      Pr(2)     Pr(3)
+class 1:  0.4555369 0.08589070 0.4585724
+class 2:  0.4496426 0.08778817 0.4625692
+class 3:  0.4506300 0.08528220 0.4640878
+class 4:  0.4609871 0.08035561 0.4586573
+class 5:  0.4675247 0.07902992 0.4534454
+class 6:  0.4567192 0.08145399 0.4618268
+
+$active_products_group
+              Pr(1)     Pr(2)     Pr(3)
+class 1:  0.1350597 0.4182416 0.4466987
+class 2:  0.1436113 0.4067644 0.4496243
+class 3:  0.1544882 0.3851520 0.4603598
+class 4:  0.1496446 0.4000165 0.4503389
+class 5:  0.1534390 0.4037150 0.4428461
+class 6:  0.1574445 0.4041272 0.4384283
+
+$app_login_group
+              Pr(1)      Pr(2)     Pr(3)
+class 1:  0.6336881 0.03241037 0.3339015
+class 2:  0.6403235 0.02913368 0.3305429
+class 3:  0.6320932 0.02876858 0.3391382
+class 4:  0.6429074 0.03093655 0.3261561
+class 5:  0.6402412 0.03132521 0.3284336
+class 6:  0.6429729 0.03120917 0.3258179
+
+$tx_amount_group
+              Pr(1)     Pr(2)         Pr(3)
+class 1:  0.0000000 0.6338885  3.661115e-01
+class 2:  0.6709776 0.0000000  3.290224e-01
+class 3:  0.0000000 0.2108840  7.891160e-01
+class 4:  0.9537084 0.0000000  4.629155e-02
+class 5:  0.0000000 1.0000000 5.432716e-134
+class 6:  0.0000000 0.3298279  6.701721e-01
+
+$tx_count_group
+                  Pr(1)        Pr(2)        Pr(3)
+class 1:   1.670403e-01 4.047678e-01 4.281919e-01
+class 2:  3.514528e-100 5.874097e-01 4.125903e-01
+class 3:   2.663468e-02 4.090925e-01 5.642728e-01
+class 4:   5.525736e-01 1.298428e-01 3.175836e-01
+class 5:   1.732367e-01 4.267370e-01 4.000264e-01
+class 6:   1.000000e+00 3.856664e-44 2.340899e-16
+
+$clv_value_group
+                  Pr(1)        Pr(2)        Pr(3)
+class 1:   7.135157e-90 6.981632e-01 0.3018368154
+class 2:   1.069900e-01 2.178965e-41 0.8930099601
+class 3:   2.471218e-04 4.830078e-01 0.5167451196
+class 4:   9.984320e-01 7.823309e-04 0.0007856919
+class 5:  1.307053e-300 9.746685e-01 0.0253314500
+class 6:   4.973785e-01 5.482884e-49 0.5026215202
+
+$churn_group
+              Pr(1)     Pr(2)
+class 1:  0.3193156 0.6806844
+class 2:  0.3654079 0.6345921
+class 3:  0.3945235 0.6054765
+class 4:  0.3755794 0.6244206
+class 5:  0.3760711 0.6239289
+class 6:  0.3786358 0.6213642
+
+$savings_account
+                 Pr(1)     Pr(2)
+class 1:  2.961077e-35 1.0000000
+class 2:  2.134355e-01 0.7865645
+class 3:  2.805448e-01 0.7194552
+class 4:  2.128433e-01 0.7871567
+class 5:  2.712150e-01 0.7287850
+class 6:  2.113611e-01 0.7886389
+
+$credit_card
+              Pr(1)     Pr(2)
+class 1:  0.0527334 0.9472666
+class 2:  0.3740652 0.6259348
+class 3:  0.4905491 0.5094509
+class 4:  0.3666191 0.6333809
+class 5:  0.4667142 0.5332858
+class 6:  0.3898578 0.6101422
+
+$personal_loan
+              Pr(1)     Pr(2)
+class 1:  0.5128302 0.4871698
+class 2:  0.6782935 0.3217065
+class 3:  0.7391790 0.2608210
+class 4:  0.6865005 0.3134995
+class 5:  0.7387752 0.2612248
+class 6:  0.6861722 0.3138278
+
+$investment_account
+              Pr(1)     Pr(2)
+class 1:  0.3371524 0.6628476
+class 2:  0.5797547 0.4202453
+class 3:  0.6482283 0.3517717
+class 4:  0.5788743 0.4211257
+class 5:  0.6351474 0.3648526
+class 6:  0.5836135 0.4163865
+
+$insurance_product
+              Pr(1)     Pr(2)
+class 1:  0.6703342 0.3296658
+class 2:  0.7875372 0.2124628
+class 3:  0.8254691 0.1745309
+class 4:  0.7866017 0.2133983
+class 5:  0.8231719 0.1768281
+class 6:  0.7940127 0.2059873
+
+$bill_payment_user
+              Pr(1)     Pr(2)
+class 1:  0.3030329 0.6969671
+class 2:  0.3005441 0.6994559
+class 3:  0.3011406 0.6988594
+class 4:  0.2957568 0.7042432
+class 5:  0.3031027 0.6968973
+class 6:  0.2904039 0.7095961
+
+$auto_savings_enabled
+              Pr(1)     Pr(2)
+class 1:  0.6022730 0.3977270
+class 2:  0.5947825 0.4052175
+class 3:  0.5848556 0.4151444
+class 4:  0.6045126 0.3954874
+class 5:  0.5928173 0.4071827
+class 6:  0.6136733 0.3863267</code></pre>
+</div>
+</div>
+<p>The item-response probabilities can be used to further interpret the defining characteristics of each latent class.</p>
+<hr>
+</section>
+<section id="interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation">Interpretation</h3>
+<p>The clustering results suggest that customers can be segmented into distinct latent classes based on their demographic characteristics, financial product ownership, transaction behaviour, and customer value indicators.</p>
+<p>For example, one cluster may represent highly engaged customers with multiple financial products, frequent app usage, and high customer lifetime value. Another cluster may represent low-engagement customers with fewer products, lower transaction activity, and higher churn risk. A third cluster may reflect medium-value transactional customers with moderate product adoption and stable behavioural patterns.</p>
+<p>These latent classes are useful for identifying differentiated customer strategies, such as retention campaigns for high-risk customers, cross-selling opportunities for medium-engagement customers, and loyalty programmes for high-value customer groups.</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

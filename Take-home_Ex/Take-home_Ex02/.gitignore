@@ -1,0 +1,16 @@
+# Ignore data files
+data/
+*.csv
+*.xlsx
+
+# R temporary files
+.Rhistory
+.RData
+.Rproj.user
+
+# Quarto cache
+_cache/
+
+# System files
+.DS_Store
+Thumbs.db
